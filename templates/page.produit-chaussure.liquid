@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Chaussure Base EMPREINTE — Fiche produit</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,300;0,400;0,700;0,800;0,900;1,700;1,900&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+    :root{--noir:#0A0A0A;--blanc:#F5F2ED;--terre:#C47A3A;--vert:#2E5C3A;--gris:#888;}
+    html{scroll-behavior:smooth;}
+    body{font-family:'DM Sans',sans-serif;background:var(--blanc);color:var(--noir);overflow-x:hidden;cursor:none;}
+    .cursor{width:10px;height:10px;background:var(--terre);border-radius:50%;position:fixed;top:0;left:0;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);transition:width .2s,height .2s;}
+    .cursor-ring{width:36px;height:36px;border:1px solid rgba(196,122,58,.5);border-radius:50%;position:fixed;top:0;left:0;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);transition:all .12s ease-out;}
+
+    /* NAV */
+    nav{position:fixed;top:0;left:0;right:0;z-index:500;display:flex;align-items:center;justify-content:space-between;padding:0 40px;height:64px;background:rgba(245,242,237,.95);backdrop-filter:blur(12px);border-bottom:1px solid rgba(10,10,10,.08);}
+    .nav-logo{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:20px;letter-spacing:.18em;text-transform:uppercase;color:var(--noir);text-decoration:none;}
+    .nav-center{display:flex;align-items:center;gap:32px;}
+    .nav-link{font-size:11px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;color:rgba(10,10,10,.45);text-decoration:none;transition:color .2s;}
+    .nav-link:hover,.nav-link.active{color:var(--noir);}
+    .nav-right{display:flex;align-items:center;gap:4px;}
+    .nav-icon{width:40px;height:40px;display:flex;align-items:center;justify-content:center;color:rgba(10,10,10,.5);text-decoration:none;transition:color .2s;position:relative;}
+    .nav-icon:hover{color:var(--noir);}
+    .cart-badge{background:var(--terre);color:#fff;border-radius:50%;width:16px;height:16px;display:inline-flex;align-items:center;justify-content:center;font-size:8px;font-weight:900;position:absolute;top:5px;right:3px;}
+
+    /* BREADCRUMB */
+    .breadcrumb{padding:84px 64px 0;display:flex;align-items:center;gap:8px;}
+    .breadcrumb a{font-size:12px;color:#aaa;text-decoration:none;letter-spacing:.04em;transition:color .2s;}
+    .breadcrumb a:hover{color:var(--noir);}
+    .breadcrumb span{font-size:12px;color:#ddd;}
+
+    /* PRODUCT LAYOUT */
+    .product{display:grid;grid-template-columns:1fr 1fr;gap:0;padding:32px 64px 80px;max-width:1400px;margin:0 auto;}
+
+    /* GALLERY */
+    .gallery{position:sticky;top:80px;height:fit-content;}
+    .gallery-main{aspect-ratio:4/5;overflow:hidden;background:#e8e4dc;position:relative;margin-bottom:12px;}
+    .gallery-main img{width:100%;height:100%;object-fit:cover;transition:transform .6s ease;}
+    .gallery-main:hover img{transform:scale(1.03);}
+    .gallery-badge{position:absolute;top:20px;left:20px;background:var(--noir);color:var(--blanc);font-size:10px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;padding:6px 12px;}
+    .gallery-thumbs{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;}
+    .thumb{aspect-ratio:1;overflow:hidden;cursor:none;border:2px solid transparent;transition:border-color .2s;}
+    .thumb.active{border-color:var(--noir);}
+    .thumb img{width:100%;height:100%;object-fit:cover;transition:transform .4s;}
+    .thumb:hover img{transform:scale(1.06);}
+
+    /* PRODUCT INFO */
+    .product-info{padding:0 0 0 64px;}
+    .prod-eyebrow{font-size:10px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--vert);margin-bottom:12px;}
+    .prod-name{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:clamp(44px,4vw,60px);text-transform:uppercase;line-height:.95;color:var(--noir);margin-bottom:6px;}
+    .prod-name em{font-style:italic;color:var(--terre);}
+    .prod-ref{font-size:11px;color:#bbb;letter-spacing:.08em;margin-bottom:20px;}
+
+    /* STOCK */
+    .stock-row{display:flex;align-items:center;gap:10px;margin-bottom:20px;padding-bottom:20px;border-bottom:1px solid rgba(10,10,10,.08);}
+    .stock-bar{width:100px;height:3px;background:rgba(10,10,10,.1);border-radius:2px;overflow:hidden;}
+    .stock-fill{height:100%;border-radius:2px;background:var(--vert);}
+    .stock-fill.low{background:#c0392b;}
+    .stock-fill.medium{background:var(--terre);}
+    .stock-text{font-size:11px;color:#777;font-weight:500;letter-spacing:.04em;}
+    .stock-dot{width:7px;height:7px;border-radius:50%;background:var(--vert);flex-shrink:0;}
+    .stock-dot.low{background:#c0392b;}
+    .stock-dot.medium{background:var(--terre);}
+
+    /* PRICE */
+    .price-row{display:flex;align-items:baseline;gap:12px;margin-bottom:28px;}
+    .price-main{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:48px;color:var(--noir);}
+    .price-note{font-size:12px;color:#aaa;line-height:1.5;}
+
+    /* COULEURS */
+    .option-block{margin-bottom:24px;}
+    .option-label{font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--noir);margin-bottom:12px;display:flex;gap:6px;}
+    .option-label span{color:var(--gris);font-weight:400;}
+    .colors{display:flex;gap:8px;flex-wrap:wrap;}
+    .color-swatch{width:36px;height:36px;border-radius:50%;cursor:none;position:relative;transition:transform .15s;}
+    .color-swatch:hover{transform:scale(1.1);}
+    .color-swatch.active::after{content:'';position:absolute;inset:-3px;border-radius:50%;border:2px solid var(--noir);}
+    .color-name{display:none;font-size:12px;color:var(--gris);margin-left:4px;}
+
+    /* TAILLES */
+    .sizes{display:flex;gap:8px;flex-wrap:wrap;}
+    .size-btn{width:52px;height:52px;display:flex;align-items:center;justify-content:center;font-family:'Barlow Condensed',sans-serif;font-size:16px;font-weight:700;background:transparent;border:1px solid rgba(10,10,10,.15);cursor:none;transition:all .2s;position:relative;}
+    .size-btn:hover:not(.soldout){background:var(--noir);color:var(--blanc);border-color:var(--noir);}
+    .size-btn.active{background:var(--noir);color:var(--blanc);border-color:var(--noir);}
+    .size-btn.soldout{opacity:.3;cursor:not-allowed;text-decoration:line-through;}
+    .size-guide{font-size:12px;color:var(--vert);text-decoration:none;font-weight:500;margin-top:8px;display:inline-block;letter-spacing:.04em;}
+
+    /* QTY */
+    .qty-row{display:flex;align-items:center;gap:12px;margin-bottom:24px;}
+    .qty-ctrl{display:flex;align-items:center;border:1px solid rgba(10,10,10,.15);}
+    .qty-btn{width:44px;height:44px;background:none;border:none;font-size:20px;cursor:none;display:flex;align-items:center;justify-content:center;transition:background .2s;color:var(--noir);}
+    .qty-btn:hover{background:rgba(10,10,10,.05);}
+    .qty-num{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:18px;width:44px;text-align:center;border-left:1px solid rgba(10,10,10,.1);border-right:1px solid rgba(10,10,10,.1);}
+
+    /* BOUTONS */
+    .cta-row{display:flex;flex-direction:column;gap:10px;margin-bottom:28px;}
+    .btn-add{width:100%;padding:17px;background:var(--noir);color:var(--blanc);font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;border:none;cursor:none;transition:background .2s;}
+    .btn-add:hover{background:var(--vert);}
+    .btn-buy{width:100%;padding:17px;background:var(--terre);color:var(--blanc);font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;border:none;cursor:none;transition:background .2s;}
+    .btn-buy:hover{background:#a8642e;}
+
+    /* REASSURANCE */
+    .reassurance{display:flex;flex-direction:column;gap:0;border:1px solid rgba(10,10,10,.08);margin-bottom:32px;}
+    .reassurance-item{display:flex;align-items:center;gap:14px;padding:14px 16px;border-bottom:1px solid rgba(10,10,10,.06);font-size:13px;color:#666;}
+    .reassurance-item:last-child{border-bottom:none;}
+    .reassurance-item .icon{font-size:18px;width:24px;text-align:center;flex-shrink:0;}
+    .reassurance-item strong{color:var(--noir);}
+
+    /* ACCORDION */
+    .accordion{border-top:1px solid rgba(10,10,10,.1);}
+    .accordion-item{border-bottom:1px solid rgba(10,10,10,.08);}
+    .accordion-header{display:flex;align-items:center;justify-content:space-between;padding:18px 0;cursor:none;}
+    .accordion-header h4{font-size:13px;font-weight:600;letter-spacing:.04em;color:var(--noir);}
+    .accordion-arrow{font-size:18px;color:var(--gris);transition:transform .3s;}
+    .accordion-item.open .accordion-arrow{transform:rotate(180deg);}
+    .accordion-body{display:none;padding-bottom:18px;}
+    .accordion-item.open .accordion-body{display:block;}
+    .accordion-body p,.accordion-body li{font-size:13px;color:#777;line-height:1.8;}
+    .accordion-body ul{list-style:none;display:flex;flex-direction:column;gap:6px;}
+    .accordion-body ul li::before{content:'—';color:var(--terre);margin-right:8px;}
+    .specs-table{width:100%;border-collapse:collapse;}
+    .specs-table tr td{padding:8px 0;font-size:13px;border-bottom:1px solid rgba(10,10,10,.05);}
+    .specs-table tr td:first-child{color:#aaa;text-transform:uppercase;font-size:11px;letter-spacing:.07em;width:40%;}
+    .specs-table tr td:last-child{font-weight:600;color:var(--noir);}
+
+    /* PRODUITS LIÉS */
+    .related{padding:80px 64px;border-top:1px solid rgba(10,10,10,.08);background:var(--blanc);}
+    .related-header{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:40px;}
+    .related-header h3{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:clamp(32px,3vw,44px);text-transform:uppercase;color:var(--noir);}
+    .related-header a{font-size:12px;color:var(--vert);text-decoration:none;font-weight:600;letter-spacing:.06em;}
+    .related-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;background:rgba(10,10,10,.08);}
+    .related-card{background:var(--blanc);overflow:hidden;text-decoration:none;transition:background .3s;}
+    .related-card:hover{background:#eeeae3;}
+    .related-photo{aspect-ratio:4/3;overflow:hidden;}
+    .related-photo img{width:100%;height:100%;object-fit:cover;transition:transform .6s;}
+    .related-card:hover .related-photo img{transform:scale(1.05);}
+    .related-body{padding:20px 20px 24px;}
+    .related-name{font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:20px;text-transform:uppercase;color:var(--noir);margin-bottom:4px;}
+    .related-sub{font-size:12px;color:#aaa;margin-bottom:10px;}
+    .related-price{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:22px;color:var(--noir);}
+
+    /* TOAST & PANIER SLIDE */
+    #toast{position:fixed;bottom:32px;left:50%;transform:translateX(-50%);background:var(--noir);color:var(--blanc);font-size:13px;letter-spacing:.06em;padding:14px 28px;z-index:9999;opacity:0;transition:opacity .3s;pointer-events:none;white-space:nowrap;}
+    .cart-overlay{position:fixed;inset:0;background:rgba(10,10,10,.5);z-index:800;opacity:0;pointer-events:none;transition:opacity .3s;}
+    .cart-overlay.open{opacity:1;pointer-events:all;}
+    .cart-panel{position:fixed;top:0;right:0;bottom:0;width:420px;background:var(--blanc);z-index:801;transform:translateX(100%);transition:transform .35s ease;display:flex;flex-direction:column;}
+    .cart-panel.open{transform:translateX(0);}
+    .cart-header{padding:24px 28px;border-bottom:1px solid rgba(10,10,10,.08);display:flex;align-items:center;justify-content:space-between;}
+    .cart-header h3{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:20px;text-transform:uppercase;}
+    .cart-close{background:none;border:none;font-size:22px;cursor:none;color:var(--noir);}
+    .cart-items{flex:1;overflow-y:auto;padding:20px 28px;}
+    .cart-empty{text-align:center;padding:60px 0;color:#aaa;font-size:14px;}
+    .cart-item{display:flex;align-items:center;gap:14px;padding:14px 0;border-bottom:1px solid rgba(10,10,10,.06);}
+    .cart-item-thumb{width:60px;height:60px;object-fit:cover;flex-shrink:0;}
+    .cart-item-info{flex:1;}
+    .cart-item-name{font-size:13px;font-weight:600;color:var(--noir);}
+    .cart-item-variant{font-size:11px;color:#aaa;margin-top:2px;}
+    .cart-item-price{font-size:13px;color:var(--gris);}
+    .cart-item-qty{display:flex;align-items:center;gap:8px;margin-top:6px;}
+    .cqty-btn{width:24px;height:24px;background:rgba(10,10,10,.06);border:none;cursor:none;font-size:14px;display:flex;align-items:center;justify-content:center;transition:background .2s;}
+    .cqty-btn:hover{background:var(--noir);color:var(--blanc);}
+    .cqty-num{font-weight:700;font-size:14px;min-width:18px;text-align:center;}
+    .cart-footer{padding:20px 28px;border-top:1px solid rgba(10,10,10,.08);}
+    .cart-total-row{display:flex;justify-content:space-between;margin-bottom:16px;}
+    .cart-total-label{font-size:12px;text-transform:uppercase;letter-spacing:.1em;color:var(--gris);}
+    .cart-total-amount{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:36px;}
+    .checkout-btn{width:100%;padding:15px;background:var(--noir);color:var(--blanc);font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;border:none;cursor:none;transition:background .2s;margin-bottom:8px;}
+    .checkout-btn:hover{background:var(--terre);}
+    .continue-btn{width:100%;padding:11px;background:transparent;color:var(--noir);font-size:12px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;border:1px solid rgba(10,10,10,.15);cursor:none;transition:all .2s;}
+    .continue-btn:hover{border-color:var(--noir);}
+
+    @media(max-width:960px){
+      nav{padding:0 20px;}
+      .nav-center .nav-link{display:none;}
+      .breadcrumb{padding:84px 24px 0;}
+      .product{grid-template-columns:1fr;padding:20px 24px 64px;gap:40px;}
+      .gallery{position:static;}
+      .product-info{padding:0;}
+      .related{padding:64px 24px;}
+      .related-grid{grid-template-columns:1fr 1fr;}
+      .cart-panel{width:100%;}
+    }
+  </style>
+</head>
+<body>
+  <div class="cursor" id="cursor"></div>
+  <div class="cursor-ring" id="cursorRing"></div>
+  <div id="toast"></div>
+
+  <!-- PANIER SLIDE -->
+  <div class="cart-overlay" id="cartOverlay" onclick="closeCart()"></div>
+  <div class="cart-panel" id="cartPanel">
+    <div class="cart-header">
+      <h3>Panier <span id="cartCount" style="font-size:14px;color:var(--gris);font-weight:400;"></span></h3>
+      <button class="cart-close" onclick="closeCart()">✕</button>
+    </div>
+    <div class="cart-items" id="cartItems"></div>
+    <div class="cart-footer">
+      <div class="cart-total-row">
+        <span class="cart-total-label">Total</span>
+        <span class="cart-total-amount" id="cartTotal">0€</span>
+      </div>
+      <button class="checkout-btn" onclick="checkout()">Finaliser la commande</button>
+      <button class="continue-btn" onclick="closeCart()">Continuer mes achats</button>
+    </div>
+  </div>
+
+  <!-- NAV -->
+  <nav>
+    <a href="/" class="nav-logo">Empreinte</a>
+    <div class="nav-center">
+      <a href="/pages/chaussure" class="nav-link">La Chaussure</a>
+      <a href="/pages/semelles" class="nav-link">Les Semelles</a>
+      <a href="/pages/technologie" class="nav-link">Technologie</a>
+      <a href="/pages/commander" class="nav-link">Produits</a>
+    </div>
+    <div class="nav-right">
+      <a href="/pages/compte" class="nav-icon" title="Mon compte"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg></a>
+      <a href="#" class="nav-icon" onclick="openCart();return false;" title="Panier"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg><span class="cart-badge" id="navBadge">0</span></a>
+    </div>
+  </nav>
+
+  <!-- BREADCRUMB -->
+  <div class="breadcrumb">
+    <a href="/">Accueil</a>
+    <span>/</span>
+    <a href="/pages/commander">Boutique</a>
+    <span>/</span>
+    <a href="/pages/chaussure">La Chaussure</a>
+    <span>/</span>
+    <a href="#" style="color:var(--noir);">Chaussure Base EMPREINTE</a>
+  </div>
+
+  <!-- PRODUCT -->
+  <div class="product">
+
+    <!-- GALERIE -->
+    <div class="gallery">
+      <div class="gallery-main">
+        <div class="gallery-badge">Nouveauté 2025</div>
+        <img src="https://images.unsplash.com/photo-1551632811-561732d1e306?w=900&q=85&fit=crop" alt="Chaussure EMPREINTE" id="mainImg"/>
+      </div>
+      <div class="gallery-thumbs">
+        <div class="thumb active" onclick="setImg(this,'empreinte-chaussure.png')">
+          <img src="https://images.unsplash.com/photo-1551632811-561732d1e306?w=900&q=85&fit=crop" alt=""/>
+        </div>
+        <div class="thumb" onclick="setImg(this,'https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=900&q=85&fit=crop')">
+          <img src="https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=300&q=80&fit=crop" alt=""/>
+        </div>
+        <div class="thumb" onclick="setImg(this,'https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=900&q=85&fit=crop')">
+          <img src="https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=300&q=80&fit=crop" alt=""/>
+        </div>
+        <div class="thumb" onclick="setImg(this,'https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=900&q=85&fit=crop')">
+          <img src="https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=300&q=80&fit=crop" alt=""/>
+        </div>
+      </div>
+    </div>
+
+    <!-- INFO -->
+    <div class="product-info">
+      <div class="prod-eyebrow">Chaussure Running Modulable</div>
+      <h1 class="prod-name">Chaussure<br><em>Base EMPREINTE</em></h1>
+      <p class="prod-ref">Réf. EMP-BASE-2025 · Mesh Matryx + Semelle PEBA</p>
+
+      <div class="stock-row">
+        <span class="stock-dot medium"></span>
+        <div class="stock-bar"><div class="stock-fill medium" style="width:45%"></div></div>
+        <span class="stock-text">Stock limité — 12 paires restantes</span>
+      </div>
+
+      <div class="price-row">
+        <div class="price-main" id="currentPrice">120€</div>
+        <div class="price-note">Chaussure seule<br>Kit complet (3 semelles) : 180€</div>
+      </div>
+
+      <!-- COULEURS -->
+      <div class="option-block">
+        <div class="option-label">Couleur — <span id="colorLabel">Noir Forêt</span></div>
+        <div class="colors">
+          <div class="color-swatch active" style="background:#1a2e1e;" title="Noir Forêt" onclick="selectColor(this,'Noir Forêt')"></div>
+          <div class="color-swatch" style="background:#7B4A2E;" title="Terre Brûlée" onclick="selectColor(this,'Terre Brûlée')"></div>
+          <div class="color-swatch" style="background:#6b7280;" title="Gris Pierre" onclick="selectColor(this,'Gris Pierre')"></div>
+          <div class="color-swatch" style="background:#d4cfc6;border:1px solid #ccc;" title="Blanc Alpine" onclick="selectColor(this,'Blanc Alpine')"></div>
+        </div>
+      </div>
+
+      <!-- TAILLES -->
+      <div class="option-block">
+        <div class="option-label">Pointure — <span id="sizeLabel">Sélectionne une taille</span></div>
+        <div class="sizes">
+          <button class="size-btn soldout">36</button>
+          <button class="size-btn" onclick="selectSize(this)">37</button>
+          <button class="size-btn" onclick="selectSize(this)">38</button>
+          <button class="size-btn" onclick="selectSize(this)">39</button>
+          <button class="size-btn" onclick="selectSize(this)">40</button>
+          <button class="size-btn" onclick="selectSize(this)">41</button>
+          <button class="size-btn" onclick="selectSize(this)">42</button>
+          <button class="size-btn" onclick="selectSize(this)">43</button>
+          <button class="size-btn" onclick="selectSize(this)">44</button>
+          <button class="size-btn" onclick="selectSize(this)">45</button>
+          <button class="size-btn" onclick="selectSize(this)">46</button>
+          <button class="size-btn soldout">47</button>
+          <button class="size-btn soldout">48</button>
+        </div>
+        <a href="#" class="size-guide" onclick="showToast('Guide des tailles disponible prochainement');return false;">→ Guide des tailles</a>
+      </div>
+
+      <!-- QTY -->
+      <div class="option-block">
+        <div class="option-label">Quantité</div>
+        <div class="qty-row">
+          <div class="qty-ctrl">
+            <button class="qty-btn" onclick="changeQtyProd(-1)">−</button>
+            <span class="qty-num" id="prodQty">1</span>
+            <button class="qty-btn" onclick="changeQtyProd(1)">+</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- BOUTONS CTA -->
+      <div class="cta-row">
+        <button class="btn-add" onclick="addToCartProd()">Ajouter au panier</button>
+        <button class="btn-buy" onclick="buyNow()">Commander maintenant</button>
+      </div>
+
+      <!-- REASSURANCE -->
+      <div class="reassurance">
+        <div class="reassurance-item"><span class="icon">🚚</span><div><strong>Livraison offerte</strong> dès 80€ · 2–3 jours ouvrés</div></div>
+        <div class="reassurance-item"><span class="icon">↩️</span><div><strong>Retour gratuit</strong> sous 30 jours</div></div>
+        <div class="reassurance-item"><span class="icon">⭐</span><div><strong>Garantie 2 ans</strong> contre les défauts de fabrication</div></div>
+        <div class="reassurance-item"><span class="icon">🔒</span><div>Paiement <strong>100% sécurisé</strong> · CB, PayPal, Apple Pay</div></div>
+      </div>
+
+      <!-- ACCORDION -->
+      <div class="accordion">
+        <div class="accordion-item open">
+          <div class="accordion-header" onclick="toggleAccordion(this)">
+            <h4>Description</h4>
+            <span class="accordion-arrow">⌄</span>
+          </div>
+          <div class="accordion-body">
+            <p>La chaussure EMPREINTE est la base de tout le système modulaire. Conçue pour ne jamais être en contact direct avec le sol, elle repose toujours sur une semelle interchangeable. Cette conception lui permet de durer 2 à 3 fois plus longtemps qu'une chaussure classique.</p>
+            <br/>
+            <p>La tige en Mesh Matryx (Kevlar + Polyamide) est indéchirable, ultra-légère et hydrophobe. La semelle intermédiaire PEBA conserve 95% de son rebond à 1 500 km. Le système Slide-Lock permet de changer de semelle en moins de 10 secondes.</p>
+          </div>
+        </div>
+        <div class="accordion-item">
+          <div class="accordion-header" onclick="toggleAccordion(this)">
+            <h4>Caractéristiques techniques</h4>
+            <span class="accordion-arrow">⌄</span>
+          </div>
+          <div class="accordion-body">
+            <table class="specs-table">
+              <tr><td>Tige</td><td>Matryx™ (Kevlar + Polyamide)</td></tr>
+              <tr><td>Semelle intermédiaire</td><td>Mousse PEBA haute résilience</td></tr>
+              <tr><td>Système fixation</td><td>Slide-Lock™ breveté</td></tr>
+              <tr><td>Étanchéité</td><td>Joint Seal-Lip silicone périmétral</td></tr>
+              <tr><td>Durée de vie</td><td>1 500 km garantis</td></tr>
+              <tr><td>Fermeture</td><td>Lacets plats + maintien latéral</td></tr>
+              <tr><td>Drop</td><td>6mm</td></tr>
+              <tr><td>Poids (42)</td><td>220g (chaussure seule)</td></tr>
+            </table>
+          </div>
+        </div>
+        <div class="accordion-item">
+          <div class="accordion-header" onclick="toggleAccordion(this)">
+            <h4>Contenu de la boîte</h4>
+            <span class="accordion-arrow">⌄</span>
+          </div>
+          <div class="accordion-body">
+            <ul>
+              <li>1 paire de chaussures Base EMPREINTE</li>
+              <li>1 paire de lacets de rechange</li>
+              <li>Notice d'utilisation Slide-Lock™</li>
+              <li>Carte de garantie 2 ans</li>
+            </ul>
+            <p style="margin-top:12px;font-style:italic;">Les semelles sont vendues séparément ou dans le Kit Complet à 180€.</p>
+          </div>
+        </div>
+        <div class="accordion-item">
+          <div class="accordion-header" onclick="toggleAccordion(this)">
+            <h4>Livraison &amp; Retours</h4>
+            <span class="accordion-arrow">⌄</span>
+          </div>
+          <div class="accordion-body">
+            <ul>
+              <li>Livraison standard : 2–3 jours ouvrés (offerte dès 80€)</li>
+              <li>Livraison express : 24h disponible (+6€)</li>
+              <li>Retours gratuits sous 30 jours</li>
+              <li>Remboursement sous 5–7 jours ouvrés</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PRODUITS LIÉS -->
+  <section class="related">
+    <div class="related-header">
+      <h3>Complète ton équipement</h3>
+      <a href="/pages/commander">Voir tout →</a>
+    </div>
+    <div class="related-grid">
+      <a href="/pages/commander" class="related-card">
+        <div class="related-photo">
+          <img src="https://images.unsplash.com/photo-1476480862126-209bfaa8edc8?w=600&q=80&fit=crop" alt="Semelle Route"/>
+        </div>
+        <div class="related-body">
+          <div class="related-name">Semelle Route &amp; Urbain</div>
+          <div class="related-sub">Bitume · Parcs · Pistes</div>
+          <div class="related-price">29€</div>
+        </div>
+      </a>
+      <a href="/pages/commander" class="related-card">
+        <div class="related-photo">
+          <img src="https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=600&q=80&fit=crop" alt="Semelle Chemin"/>
+        </div>
+        <div class="related-body">
+          <div class="related-name">Semelle Chemin Sec</div>
+          <div class="related-sub">Forêt · Terre · Graviers</div>
+          <div class="related-price">29€</div>
+        </div>
+      </a>
+      <a href="/pages/commander" class="related-card">
+        <div class="related-photo">
+          <img src="https://images.unsplash.com/photo-1454496522488-7a8e488e8606?w=600&q=80&fit=crop" alt="Semelle Boue"/>
+        </div>
+        <div class="related-body">
+          <div class="related-name">Semelle Boue &amp; Technique</div>
+          <div class="related-sub">Montagne · Herbe · Marécages</div>
+          <div class="related-price">29€</div>
+        </div>
+      </a>
+    </div>
+  </section>
+
+  <script>
+    // Cursor
+    const cursor=document.getElementById('cursor'),ring=document.getElementById('cursorRing');
+    let mx=0,my=0,rx=0,ry=0;
+    document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;});
+    function anim(){cursor.style.left=mx+'px';cursor.style.top=my+'px';rx+=(mx-rx)*.14;ry+=(my-ry)*.14;ring.style.left=rx+'px';ring.style.top=ry+'px';requestAnimationFrame(anim);}
+    anim();
+    document.querySelectorAll('a,button').forEach(el=>{
+      el.addEventListener('mouseenter',()=>{cursor.style.width='6px';cursor.style.height='6px';ring.style.width='52px';ring.style.height='52px';});
+      el.addEventListener('mouseleave',()=>{cursor.style.width='10px';cursor.style.height='10px';ring.style.width='36px';ring.style.height='36px';});
+    });
+
+    // Gallery
+    function setImg(el,src){
+      document.getElementById('mainImg').src=src;
+      document.querySelectorAll('.thumb').forEach(t=>t.classList.remove('active'));
+      el.classList.add('active');
+    }
+
+    // Color
+    let selectedColor='Noir Forêt';
+    function selectColor(el,name){
+      document.querySelectorAll('.color-swatch').forEach(s=>s.classList.remove('active'));
+      el.classList.add('active');
+      selectedColor=name;
+      document.getElementById('colorLabel').textContent=name;
+    }
+
+    // Size
+    let selectedSize=null;
+    function selectSize(el){
+      if(el.classList.contains('soldout'))return;
+      document.querySelectorAll('.size-btn').forEach(b=>b.classList.remove('active'));
+      el.classList.add('active');
+      selectedSize=el.textContent;
+      document.getElementById('sizeLabel').textContent=selectedSize;
+    }
+
+    // Qty
+    let qty=1;
+    function changeQtyProd(d){qty=Math.max(1,qty+d);document.getElementById('prodQty').textContent=qty;}
+
+    // Cart logic
+    function getCart(){return JSON.parse(localStorage.getItem('empreinte-cart')||'[]');}
+    function saveCart(c){localStorage.setItem('empreinte-cart',JSON.stringify(c));}
+
+    function addToCartProd(){
+      if(!selectedSize){showToast('Sélectionne une taille');return;}
+      const name='Chaussure Base EMPREINTE';
+      const variant=selectedColor+' — Taille '+selectedSize;
+      const price=120;
+      const cart=getCart();
+      const key=name+'|'+variant;
+      const ex=cart.find(i=>i.key===key);
+      if(ex){ex.qty+=qty;}else{cart.push({key,name,variant,price,qty,img:'https://images.unsplash.com/photo-1551632811-561732d1e306?w=120&q=70&fit=crop'});}
+      saveCart(cart);renderCart();openCart();
+    }
+
+    function buyNow(){
+      addToCartProd();
+      setTimeout(()=>window.location.href='/pages/commander',400);
+    }
+
+    function openCart(){document.getElementById('cartOverlay').classList.add('open');document.getElementById('cartPanel').classList.add('open');renderCart();}
+    function closeCart(){document.getElementById('cartOverlay').classList.remove('open');document.getElementById('cartPanel').classList.remove('open');}
+
+    function renderCart(){
+      const cart=getCart();
+      const total=cart.reduce((s,i)=>s+i.price*i.qty,0);
+      const count=cart.reduce((s,i)=>s+i.qty,0);
+      document.getElementById('cartTotal').textContent=total+'€';
+      document.getElementById('navBadge').textContent=count;
+      document.getElementById('cartCount').textContent=count>0?'('+count+')':'';
+      const container=document.getElementById('cartItems');
+      if(cart.length===0){container.innerHTML='<div class="cart-empty">Ton panier est vide.</div>';return;}
+      container.innerHTML=cart.map((item,idx)=>`
+        <div class="cart-item">
+          <img class="cart-item-thumb" src="${item.img||'https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=120&q=70&fit=crop'}" alt=""/>
+          <div class="cart-item-info">
+            <div class="cart-item-name">${item.name}</div>
+            <div class="cart-item-variant">${item.variant||''}</div>
+            <div class="cart-item-price">${item.price}€</div>
+            <div class="cart-item-qty">
+              <button class="cqty-btn" onclick="cQty(${idx},-1)">−</button>
+              <span class="cqty-num">${item.qty}</span>
+              <button class="cqty-btn" onclick="cQty(${idx},1)">+</button>
+            </div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function cQty(idx,d){const cart=getCart();cart[idx].qty+=d;if(cart[idx].qty<=0)cart.splice(idx,1);saveCart(cart);renderCart();}
+    function checkout(){showToast('Redirection vers le paiement sécurisé...');setTimeout(closeCart,1500);}
+
+    // Accordion
+    function toggleAccordion(header){
+      const item=header.parentElement;
+      const wasOpen=item.classList.contains('open');
+      document.querySelectorAll('.accordion-item').forEach(i=>i.classList.remove('open'));
+      if(!wasOpen)item.classList.add('open');
+    }
+
+    function showToast(msg){
+      const t=document.getElementById('toast');
+      t.textContent=msg;t.style.opacity='1';
+      setTimeout(()=>t.style.opacity='0',2500);
+    }
+
+    renderCart();
+  </script>
+</body>
+</html>

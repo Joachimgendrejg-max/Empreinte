@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Technologie — EMPREINTE</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,300;0,400;0,700;0,800;0,900;1,700;1,900&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+    :root{--noir:#0A0A0A;--blanc:#F5F2ED;--terre:#C47A3A;--vert:#2E5C3A;--gris:#888;}
+    html{scroll-behavior:smooth;}
+    body{font-family:'DM Sans',sans-serif;background:var(--noir);color:var(--blanc);overflow-x:hidden;cursor:none;}
+    .cursor{width:10px;height:10px;background:var(--terre);border-radius:50%;position:fixed;top:0;left:0;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);transition:width .2s,height .2s;}
+    .cursor-ring{width:36px;height:36px;border:1px solid rgba(196,122,58,.5);border-radius:50%;position:fixed;top:0;left:0;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);transition:all .12s ease-out;}
+    nav{position:fixed;top:0;left:0;right:0;z-index:500;display:flex;align-items:center;justify-content:space-between;padding:0 40px;height:64px;background:rgba(10,10,10,.95);backdrop-filter:blur(12px);border-bottom:1px solid #1a1a1a;}
+    .nav-logo{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:20px;letter-spacing:.18em;text-transform:uppercase;color:var(--blanc);text-decoration:none;}
+    .nav-center{display:flex;align-items:center;gap:32px;}
+    .nav-link{font-size:11px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;color:rgba(245,242,237,.5);text-decoration:none;transition:color .2s;}
+    .nav-link:hover,.nav-link.active{color:var(--blanc);}
+    .nav-right{display:flex;align-items:center;gap:4px;}
+    .nav-icon{width:40px;height:40px;display:flex;align-items:center;justify-content:center;color:rgba(245,242,237,.6);text-decoration:none;transition:color .2s;position:relative;}
+    .nav-icon:hover{color:var(--blanc);}
+    .cart-badge{background:var(--terre);color:#fff;border-radius:50%;width:16px;height:16px;display:inline-flex;align-items:center;justify-content:center;font-size:8px;font-weight:900;position:absolute;top:5px;right:3px;}
+
+    /* HERO */
+    .hero{height:100vh;position:relative;overflow:hidden;display:flex;align-items:flex-end;}
+    .hero-img{position:absolute;inset:0;background-image:url('https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=1800&q=85&fit=crop');background-size:cover;background-position:center 20%;}
+    .hero-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(10,10,10,.95) 0%,rgba(10,10,10,.3) 60%,rgba(10,10,10,.1) 100%);}
+    .hero-content{position:relative;z-index:2;padding:0 64px 80px;width:100%;}
+    .hero-eyebrow{font-size:11px;font-weight:500;letter-spacing:.2em;text-transform:uppercase;color:var(--terre);margin-bottom:16px;display:flex;align-items:center;gap:12px;}
+    .hero-eyebrow::before{content:'';display:block;width:28px;height:1px;background:var(--terre);}
+    .hero h1{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-style:italic;font-size:clamp(80px,12vw,160px);line-height:.88;text-transform:uppercase;color:var(--blanc);letter-spacing:-.02em;margin-bottom:36px;}
+    .hero-sub{font-size:16px;color:rgba(245,242,237,.5);max-width:480px;line-height:1.7;font-weight:300;}
+
+    /* TICKER */
+    .ticker{background:#050505;overflow:hidden;padding:14px 0;border-top:1px solid #1a1a1a;}
+    .ticker-track{display:flex;animation:ticker 24s linear infinite;width:max-content;}
+    .ticker-item{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:13px;letter-spacing:.12em;text-transform:uppercase;color:rgba(245,242,237,.3);padding:0 40px;white-space:nowrap;}
+    .ticker-item span{color:var(--terre);}
+    @keyframes ticker{0%{transform:translateX(0);}100%{transform:translateX(-50%);}}
+
+    /* MAT SECTIONS */
+    .mat-section{display:grid;grid-template-columns:1fr 1fr;min-height:80vh;border-bottom:1px solid #111;}
+    .mat-section.reverse{direction:rtl;}
+    .mat-section.reverse>*{direction:ltr;}
+    .mat-photo{overflow:hidden;position:relative;}
+    .mat-photo img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .8s ease;}
+    .mat-section:hover .mat-photo img{transform:scale(1.04);}
+    .mat-content{padding:80px 64px;display:flex;flex-direction:column;justify-content:center;background:var(--noir);}
+    .mat-content.light-bg{background:#0f0f0f;}
+    .mat-label{font-size:10px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--vert);margin-bottom:20px;}
+    .mat-content h2{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:clamp(52px,5vw,72px);text-transform:uppercase;line-height:.95;color:var(--blanc);margin-bottom:24px;}
+    .mat-content h2 em{font-style:italic;color:var(--terre);}
+    .mat-content p{font-size:15px;line-height:1.8;color:#555;font-weight:300;margin-bottom:14px;}
+    .mat-specs{margin-top:28px;display:flex;flex-direction:column;gap:0;}
+    .mspec{display:flex;justify-content:space-between;padding:13px 0;border-bottom:1px solid #1a1a1a;font-size:13px;}
+    .mspec:last-child{border-bottom:none;}
+    .mspec-k{text-transform:uppercase;letter-spacing:.07em;color:#444;}
+    .mspec-v{font-weight:600;color:var(--blanc);}
+    .mat-highlight{margin-top:24px;padding:16px 20px;background:rgba(46,92,58,.1);border-left:2px solid var(--vert);font-size:13px;color:#7ab58a;font-weight:500;line-height:1.6;}
+
+    /* PERFORMANCE */
+    .perf{padding:100px 64px;background:#050505;}
+    .perf-header{margin-bottom:72px;text-align:center;}
+    .perf-header h2{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:clamp(48px,6vw,80px);text-transform:uppercase;color:var(--blanc);line-height:.95;}
+    .perf-header h2 em{font-style:italic;color:var(--terre);}
+    .perf-header p{font-size:14px;color:#555;margin-top:14px;max-width:440px;margin-inline:auto;line-height:1.7;}
+    .perf-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:#1a1a1a;}
+    .perf-item{background:#050505;padding:48px 32px;}
+    .perf-n{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:64px;line-height:1;color:var(--blanc);margin-bottom:8px;}
+    .perf-n span{font-size:32px;color:var(--terre);}
+    .perf-label{font-size:12px;text-transform:uppercase;letter-spacing:.08em;color:#444;margin-bottom:8px;}
+    .perf-desc{font-size:13px;color:#555;line-height:1.7;}
+
+    /* COMPARATIF VS CONCURRENT */
+    .versus{padding:100px 64px;background:var(--noir);}
+    .versus-header{margin-bottom:56px;}
+    .versus-header h2{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:clamp(44px,5vw,68px);text-transform:uppercase;color:var(--blanc);line-height:.95;margin-bottom:8px;}
+    .versus-header h2 em{font-style:italic;color:var(--terre);}
+    .versus-header p{font-size:14px;color:#555;max-width:420px;line-height:1.7;}
+    table{width:100%;border-collapse:collapse;}
+    th{font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;padding:16px 20px;border-bottom:1px solid #1e1e1e;text-align:left;color:#444;}
+    th.empreinte-col{color:var(--terre);}
+    td{padding:16px 20px;border-bottom:1px solid #111;font-size:13px;color:#666;}
+    td.empreinte-col{color:rgba(245,242,237,.8);font-weight:600;}
+    tr:hover td{background:rgba(255,255,255,.015);}
+    .check{color:#7ab58a;}
+    .cross{color:#444;}
+    .partial{color:var(--terre);}
+
+    /* CTA */
+    .cta-final{height:50vh;position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center;}
+    .cta-final img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 40%;}
+    .cta-final-overlay{position:absolute;inset:0;background:rgba(10,10,10,.7);}
+    .cta-final-content{position:relative;z-index:2;text-align:center;}
+    .cta-final-content h2{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-style:italic;font-size:clamp(48px,7vw,96px);text-transform:uppercase;color:var(--blanc);line-height:.9;margin-bottom:36px;}
+    .cta-final-content h2 em{color:var(--terre);font-style:normal;}
+    .btn-cta{display:inline-block;font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:13px;letter-spacing:.12em;text-transform:uppercase;text-decoration:none;background:var(--blanc);color:var(--noir);padding:16px 40px;transition:all .2s;}
+    .btn-cta:hover{background:var(--terre);color:var(--blanc);}
+
+    footer{background:var(--noir);padding:80px 64px 48px;border-top:1px solid #1a1a1a;}
+    .footer-top{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:48px;margin-bottom:64px;padding-bottom:64px;border-bottom:1px solid #1a1a1a;}
+    .footer-logo{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:28px;letter-spacing:.14em;text-transform:uppercase;color:var(--blanc);display:block;margin-bottom:14px;text-decoration:none;}
+    .footer-logo span{color:var(--terre);}
+    .footer-tagline{font-size:13px;color:#444;line-height:1.7;max-width:220px;}
+    .footer-col h5{font-size:10px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:#444;margin-bottom:20px;}
+    .footer-col ul{list-style:none;display:flex;flex-direction:column;gap:10px;}
+    .footer-col ul li a{font-size:14px;color:#555;text-decoration:none;transition:color .2s;}
+    .footer-col ul li a:hover{color:var(--blanc);}
+    .footer-bottom{display:flex;justify-content:space-between;align-items:center;}
+    .footer-copy{font-size:11px;color:#333;}
+    .footer-socials{display:flex;gap:20px;}
+    .fsocial{font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#444;text-decoration:none;transition:color .2s;}
+    .fsocial:hover{color:var(--blanc);}
+
+    @media(max-width:960px){
+      nav{padding:0 20px;}
+      .nav-center .nav-link{display:none;}
+      .hero-content{padding:0 24px 56px;}
+      .mat-section{grid-template-columns:1fr;}
+      .mat-section.reverse{direction:ltr;}
+      .mat-photo{height:50vh;}
+      .mat-content{padding:48px 24px;}
+      .perf{padding:64px 24px;}
+      .perf-grid{grid-template-columns:1fr 1fr;}
+      .versus{padding:64px 24px;}
+      footer{padding:64px 24px 40px;}
+      .footer-top{grid-template-columns:1fr 1fr;}
+    }
+  </style>
+</head>
+<body>
+  <div class="cursor" id="cursor"></div>
+  <div class="cursor-ring" id="cursorRing"></div>
+
+  <nav>
+    <a href="/" class="nav-logo">Empreinte</a>
+    <div class="nav-center">
+      <a href="/pages/chaussure" class="nav-link">La Chaussure</a>
+      <a href="/pages/semelles" class="nav-link">Les Semelles</a>
+      <a href="/pages/technologie" class="nav-link active">Technologie</a>
+      <a href="/pages/commander" class="nav-link">Produits</a>
+    </div>
+    <div class="nav-right">
+      <a href="/pages/compte" class="nav-icon" title="Mon compte"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg></a>
+      <a href="/pages/commander" class="nav-icon" title="Panier"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg><span class="cart-badge" id="navBadge" style="display:none"></span></a>
+    </div>
+  </nav>
+
+  <section class="hero">
+    <div class="hero-img"></div>
+    <div class="hero-overlay"></div>
+    <div class="hero-content">
+      <div class="hero-eyebrow">Innovation matériaux — 2025</div>
+      <h1>L'intérieur<br>de la<br>performance.</h1>
+      <p class="hero-sub">Chaque composant d'EMPREINTE a été sélectionné parmi les matériaux les plus avancés du secteur running et outdoor.</p>
+    </div>
+  </section>
+
+  <div class="ticker">
+    <div class="ticker-track">
+      <span class="ticker-item"><span>✦</span> Matryx™ Kevlar + Polyamide</span>
+      <span class="ticker-item"><span>✦</span> PEBA haute résilience</span>
+      <span class="ticker-item"><span>✦</span> Slide-Lock™ Rails polymère</span>
+      <span class="ticker-item"><span>✦</span> Joint Seal-Lip silicone</span>
+      <span class="ticker-item"><span>✦</span> ×4 résistance déchirure</span>
+      <span class="ticker-item"><span>✦</span> 1500km durée de vie</span>
+      <span class="ticker-item"><span>✦</span> Matryx™ Kevlar + Polyamide</span>
+      <span class="ticker-item"><span>✦</span> PEBA haute résilience</span>
+      <span class="ticker-item"><span>✦</span> Slide-Lock™ Rails polymère</span>
+      <span class="ticker-item"><span>✦</span> Joint Seal-Lip silicone</span>
+      <span class="ticker-item"><span>✦</span> ×4 résistance déchirure</span>
+      <span class="ticker-item"><span>✦</span> 1500km durée de vie</span>
+    </div>
+  </div>
+
+  <!-- MATRYX -->
+  <div class="mat-section">
+    <div class="mat-photo">
+      <img src="https://images.unsplash.com/photo-1551632811-561732d1e306?w=900&q=85&fit=crop&crop=left" alt="Trail running" loading="lazy"/>
+    </div>
+    <div class="mat-content">
+      <div class="mat-label">Matériau 01 — Tige</div>
+      <h2>Matryx™<br><em>Kevlar +<br>Polyamide.</em></h2>
+      <p>Le Matryx est un tissage haute performance développé pour les applications extrêmes. Chaque fibre de Kevlar est entrelacée avec du polyamide pour créer une structure à la fois souple et indéchirable. Le même matériau que dans les casques d'alpinisme.</p>
+      <p>L'hydrophobicité est naturelle : aucun traitement chimique. Les fibres elles-mêmes repoussent l'eau, ce qui signifie que les propriétés ne se dégradent pas avec le temps ou les lavages.</p>
+      <div class="mat-specs">
+        <div class="mspec"><span class="mspec-k">Composition</span><span class="mspec-v">Kevlar + Polyamide HT</span></div>
+        <div class="mspec"><span class="mspec-k">Résistance déchirure</span><span class="mspec-v">×4 vs mesh standard</span></div>
+        <div class="mspec"><span class="mspec-k">Hydrophobicité</span><span class="mspec-v">Naturelle — permanente</span></div>
+        <div class="mspec"><span class="mspec-k">Allègement</span><span class="mspec-v">−18% vs norme tige</span></div>
+      </div>
+      <div class="mat-highlight">Utilisé dans les équipements d'alpinisme et les casques de compétition moto.</div>
+    </div>
+  </div>
+
+  <!-- PEBA -->
+  <div class="mat-section reverse">
+    <div class="mat-photo">
+      <img src="https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=900&q=85&fit=crop" alt="Montagne nature" loading="lazy"/>
+    </div>
+    <div class="mat-content light-bg">
+      <div class="mat-label">Matériau 02 — Amorti</div>
+      <h2>PEBA<br><em>Haute<br>résilience.</em></h2>
+      <p>Le PEBA (Polyether Block Amide) est la mousse de référence dans les chaussures de marathon à plaque carbone haut de gamme. Contrairement à la mousse EVA standard qui se compacte progressivement, le PEBA maintient ses propriétés d'amorti et de rebond sur toute sa durée de vie.</p>
+      <p>À 1 500 km — soit 2,5× plus longtemps qu'une chaussure standard — la semelle intermédiaire EMPREINTE conserve encore 95% de ses capacités initiales.</p>
+      <div class="mat-specs">
+        <div class="mspec"><span class="mspec-k">Type</span><span class="mspec-v">PEBA Polyether Block Amide</span></div>
+        <div class="mspec"><span class="mspec-k">Durée de vie</span><span class="mspec-v">1 500 km (EVA = 600km)</span></div>
+        <div class="mspec"><span class="mspec-k">Rebond conservé</span><span class="mspec-v">95% à 1 500km</span></div>
+        <div class="mspec"><span class="mspec-k">Énergie retournée</span><span class="mspec-v">+12% vs EVA</span></div>
+      </div>
+      <div class="mat-highlight">La même technologie que les chaussures de marathon à plaque carbone utilisées en compétition olympique.</div>
+    </div>
+  </div>
+
+  <!-- SLIDE-LOCK -->
+  <div class="mat-section">
+    <div class="mat-photo">
+      <img src="https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=900&q=85&fit=crop" alt="Montagne" loading="lazy"/>
+    </div>
+    <div class="mat-content">
+      <div class="mat-label">Système 03 — Fixation</div>
+      <h2>Slide-Lock™<br><em>Rails polymère<br>+ Seal-Lip.</em></h2>
+      <p>Le système Slide-Lock est composé de rails femelles en polymère rigide-flexible moulés sous la chaussure, d'un loquet de sécurité au talon inspiré des fixations de ski de fond, et d'un joint Seal-Lip en silicone qui court sur tout le périmètre de jonction.</p>
+      <p>Le polymère a été choisi pour sa résistance à la fatigue : il peut être enclenché et déclenché plus de 5 000 fois sans perte de tonicité. Le joint silicone résiste aux températures de −20°C à +60°C.</p>
+      <div class="mat-specs">
+        <div class="mspec"><span class="mspec-k">Rails</span><span class="mspec-v">Polymère rigide-flexible</span></div>
+        <div class="mspec"><span class="mspec-k">Cycles de fixation</span><span class="mspec-v">> 5 000 sans usure</span></div>
+        <div class="mspec"><span class="mspec-k">Joint Seal-Lip</span><span class="mspec-v">Silicone périmétral</span></div>
+        <div class="mspec"><span class="mspec-k">Température</span><span class="mspec-v">−20°C à +60°C</span></div>
+      </div>
+      <div class="mat-highlight">Inspiré des fixations de ski de fond — conçu pour des conditions extrêmes de boue, eau et froid.</div>
+    </div>
+  </div>
+
+  <!-- CHIFFRES PERFORMANCES -->
+  <section class="perf">
+    <div class="perf-header">
+      <h2>Les chiffres<br><em>qui comptent.</em></h2>
+      <p>Des performances mesurées, pas des promesses marketing.</p>
+    </div>
+    <div class="perf-grid">
+      <div class="perf-item">
+        <div class="perf-n">1 500<span>km</span></div>
+        <div class="perf-label">Durée de vie</div>
+        <p class="perf-desc">Contre 600km pour une chaussure standard. La semelle intermédiaire PEBA tient 2,5× plus longtemps.</p>
+      </div>
+      <div class="perf-item">
+        <div class="perf-n">×4<span></span></div>
+        <div class="perf-label">Résistance déchirure</div>
+        <p class="perf-desc">Le Matryx Kevlar résiste à 4 fois plus de force de déchirure qu'un mesh synthétique standard.</p>
+      </div>
+      <div class="perf-item">
+        <div class="perf-n">95<span>%</span></div>
+        <div class="perf-label">Rebond conservé</div>
+        <p class="perf-desc">À 1 500km, la mousse PEBA conserve encore 95% de ses propriétés initiales de rebond et d'amorti.</p>
+      </div>
+      <div class="perf-item">
+        <div class="perf-n">5 000<span>+</span></div>
+        <div class="perf-label">Cycles Slide-Lock</div>
+        <p class="perf-desc">Le système de fixation peut être enclenché et déclenché plus de 5 000 fois sans perte de tonicité.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- VERSUS -->
+  <section class="versus">
+    <div class="versus-header">
+      <h2>EMPREINTE<br><em>vs le marché.</em></h2>
+      <p>Une comparaison honnête avec les solutions existantes sur les critères qui comptent vraiment.</p>
+    </div>
+    <table>
+      <thead>
+        <tr>
+          <th>Critère</th>
+          <th class="empreinte-col">EMPREINTE</th>
+          <th>Salomon</th>
+          <th>Hoka</th>
+          <th>Standard marché</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Semelles modulables</td>
+          <td class="empreinte-col"><span class="check">✓</span></td>
+          <td><span class="cross">✗</span></td>
+          <td><span class="cross">✗</span></td>
+          <td><span class="cross">✗</span></td>
+        </tr>
+        <tr>
+          <td>Durée de vie (km)</td>
+          <td class="empreinte-col"><span class="check">1 500km</span></td>
+          <td><span class="partial">700km</span></td>
+          <td><span class="partial">800km</span></td>
+          <td><span class="cross">600km</span></td>
+        </tr>
+        <tr>
+          <td>Mesh Kevlar</td>
+          <td class="empreinte-col"><span class="check">✓</span></td>
+          <td><span class="partial">◎</span></td>
+          <td><span class="cross">✗</span></td>
+          <td><span class="cross">✗</span></td>
+        </tr>
+        <tr>
+          <td>Mousse PEBA</td>
+          <td class="empreinte-col"><span class="check">✓</span></td>
+          <td><span class="partial">◎</span></td>
+          <td><span class="check">✓</span></td>
+          <td><span class="cross">✗</span></td>
+        </tr>
+        <tr>
+          <td>Polyvalence route/trail</td>
+          <td class="empreinte-col"><span class="check">✓ (3 semelles)</span></td>
+          <td><span class="cross">✗</span></td>
+          <td><span class="cross">✗</span></td>
+          <td><span class="cross">✗</span></td>
+        </tr>
+        <tr>
+          <td>Prix kit complet</td>
+          <td class="empreinte-col"><span class="check">180€</span></td>
+          <td><span class="cross">180€ × 3</span></td>
+          <td><span class="cross">160€ × 3</span></td>
+          <td><span class="cross">100€ × 3</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <div class="cta-final">
+    <img src="https://images.unsplash.com/photo-1551632811-561732d1e306?w=1800&q=85&fit=crop&crop=right" alt="Trail" loading="lazy"/>
+    <div class="cta-final-overlay"></div>
+    <div class="cta-final-content">
+      <h2>La technologie<br>au service de<br>ta <em>performance.</em></h2>
+      <a href="/pages/commander" class="btn-cta">Commander le kit complet</a>
+    </div>
+  </div>
+
+  <footer>
+    <div class="footer-top">
+      <div>
+        <a href="/" class="footer-logo">Emprei<span>nte</span></a>
+        <p class="footer-tagline">La première chaussure de running à semelles modulaires. Conçue pour durer. Faite pour tous les terrains.</p>
+      </div>
+      <div class="footer-col"><h5>Produit</h5><ul><li><a href="/pages/commander">Kit complet</a></li><li><a href="/pages/semelles">Semelles</a></li><li><a href="/pages/chaussure">La chaussure</a></li><li><a href="#">Guide des tailles</a></li></ul></div>
+      <div class="footer-col"><h5>La marque</h5><ul><li><a href="#">Notre histoire</a></li><li><a href="#">Éco-responsabilité</a></li><li><a href="#">Ambassadeurs</a></li><li><a href="#">Presse</a></li></ul></div>
+      <div class="footer-col"><h5>Support</h5><ul><li><a href="#">FAQ</a></li><li><a href="#">Livraison &amp; retours</a></li><li><a href="#">Garantie</a></li><li><a href="#">Contact</a></li></ul></div>
+    </div>
+    <div class="footer-bottom">
+      <p class="footer-copy">© 2025 EMPREINTE — Tous droits réservés</p>
+      <div class="footer-socials"><a class="fsocial" href="#">Instagram</a><a class="fsocial" href="#">TikTok</a><a class="fsocial" href="#">YouTube</a></div>
+    </div>
+  </footer>
+
+  <script>
+    const cursor=document.getElementById('cursor'),ring=document.getElementById('cursorRing');
+    let mx=0,my=0,rx=0,ry=0;
+    document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;});
+    function anim(){cursor.style.left=mx+'px';cursor.style.top=my+'px';rx+=(mx-rx)*.14;ry+=(my-ry)*.14;ring.style.left=rx+'px';ring.style.top=ry+'px';requestAnimationFrame(anim);}
+    anim();
+    document.querySelectorAll('a,button').forEach(el=>{
+      el.addEventListener('mouseenter',()=>{cursor.style.width='6px';cursor.style.height='6px';ring.style.width='52px';ring.style.height='52px';});
+      el.addEventListener('mouseleave',()=>{cursor.style.width='10px';cursor.style.height='10px';ring.style.width='36px';ring.style.height='36px';});
+    });
+  </script>
+</body>
+</html>

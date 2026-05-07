@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Semelle Boue & Technique — EMPREINTE</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,300;0,400;0,700;0,800;0,900;1,700;1,900&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+    :root{--noir:#0A0A0A;--blanc:#F5F2ED;--terre:#C47A3A;--vert:#2E5C3A;--gris:#888;--accent:#4a7aab;}
+    html{scroll-behavior:smooth;}
+    body{font-family:'DM Sans',sans-serif;background:var(--blanc);color:var(--noir);overflow-x:hidden;cursor:none;}
+    .cursor{width:10px;height:10px;background:var(--terre);border-radius:50%;position:fixed;top:0;left:0;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);transition:width .2s,height .2s;}
+    .cursor-ring{width:36px;height:36px;border:1px solid rgba(196,122,58,.5);border-radius:50%;position:fixed;top:0;left:0;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);transition:all .12s ease-out;}
+    nav{position:fixed;top:0;left:0;right:0;z-index:500;display:flex;align-items:center;justify-content:space-between;padding:0 40px;height:64px;background:rgba(245,242,237,.95);backdrop-filter:blur(12px);border-bottom:1px solid rgba(10,10,10,.08);}
+    .nav-logo{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:20px;letter-spacing:.18em;text-transform:uppercase;color:var(--noir);text-decoration:none;}
+    .nav-center{display:flex;align-items:center;gap:32px;}
+    .nav-link{font-size:11px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;color:rgba(10,10,10,.45);text-decoration:none;transition:color .2s;}
+    .nav-link:hover,.nav-link.active{color:var(--noir);}
+    .nav-right{display:flex;align-items:center;gap:4px;}
+    .nav-icon{width:40px;height:40px;display:flex;align-items:center;justify-content:center;color:rgba(10,10,10,.5);text-decoration:none;transition:color .2s;position:relative;}
+    .nav-icon:hover{color:var(--noir);}
+    .cart-badge{background:var(--terre);color:#fff;border-radius:50%;width:16px;height:16px;display:inline-flex;align-items:center;justify-content:center;font-size:8px;font-weight:900;position:absolute;top:5px;right:3px;}
+    .breadcrumb{padding:84px 64px 0;display:flex;align-items:center;gap:8px;}
+    .breadcrumb a{font-size:12px;color:#aaa;text-decoration:none;transition:color .2s;}
+    .breadcrumb a:hover{color:var(--noir);}
+    .breadcrumb span{font-size:12px;color:#ddd;}
+
+    /* PRODUCT */
+    .product{display:grid;grid-template-columns:1fr 1fr;gap:0;padding:32px 64px 80px;max-width:1400px;margin:0 auto;}
+    .gallery{position:sticky;top:80px;height:fit-content;}
+    .gallery-main{aspect-ratio:4/5;overflow:hidden;position:relative;margin-bottom:12px;}
+    .gallery-main img{width:100%;height:100%;object-fit:cover;transition:transform .6s;}
+    .gallery-main:hover img{transform:scale(1.03);}
+    .gallery-tag{position:absolute;top:20px;left:20px;background:var(--noir);color:var(--blanc);font-size:10px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;padding:6px 12px;}
+    .gallery-num{position:absolute;bottom:20px;right:20px;font-family:'Barlow Condensed',sans-serif;font-weight:300;font-size:80px;line-height:1;color:rgba(255,255,255,.15);pointer-events:none;}
+    .gallery-thumbs{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;}
+    .thumb{aspect-ratio:1;overflow:hidden;cursor:none;border:2px solid transparent;transition:border-color .2s;}
+    .thumb.active{border-color:var(--noir);}
+    .thumb img{width:100%;height:100%;object-fit:cover;transition:transform .4s;}
+    .thumb:hover img{transform:scale(1.06);}
+
+    .product-info{padding:0 0 0 64px;}
+    .prod-nav{display:flex;gap:0;margin-bottom:28px;border-bottom:1px solid rgba(10,10,10,.1);}
+    .prod-nav-link{padding:10px 20px;font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;text-decoration:none;color:#aaa;transition:color .2s;border-bottom:2px solid transparent;margin-bottom:-1px;}
+    .prod-nav-link.active{color:var(--noir);border-bottom-color:var(--terre);}
+    .prod-eyebrow{font-size:10px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--vert);margin-bottom:12px;}
+    .prod-name{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:clamp(40px,4vw,56px);text-transform:uppercase;line-height:.95;color:var(--noir);margin-bottom:6px;}
+    .prod-name em{font-style:italic;color:var(--terre);}
+    .prod-ref{font-size:11px;color:#bbb;letter-spacing:.08em;margin-bottom:20px;}
+    .stock-row{display:flex;align-items:center;gap:10px;margin-bottom:20px;padding-bottom:20px;border-bottom:1px solid rgba(10,10,10,.08);}
+    .stock-bar{width:100px;height:3px;background:rgba(10,10,10,.1);border-radius:2px;overflow:hidden;}
+    .stock-fill{height:100%;border-radius:2px;background:var(--vert);}
+    .stock-fill.low{background:#c0392b;}
+    .stock-fill.medium{background:var(--terre);}
+    .stock-text{font-size:11px;color:#777;font-weight:500;letter-spacing:.04em;}
+    .stock-dot{width:7px;height:7px;border-radius:50%;background:var(--vert);flex-shrink:0;}
+    .stock-dot.low{background:#c0392b;}
+    .stock-dot.medium{background:var(--terre);}
+    .price-row{display:flex;align-items:baseline;gap:12px;margin-bottom:28px;}
+    .price-main{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:48px;color:var(--noir);}
+    .price-note{font-size:12px;color:#aaa;line-height:1.6;}
+
+    /* TERRAIN BADGES */
+    .terrain-tags{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:28px;}
+    .terrain-tag{padding:6px 14px;font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;background:rgba(10,10,10,.06);color:#666;border:none;}
+    .terrain-tag.primary{background:var(--vert);color:var(--blanc);}
+
+    /* BADGE TECHNIQUE */
+    .badge-technique{display:inline-flex;align-items:center;gap:8px;background:rgba(196,122,58,.12);border:1px solid rgba(196,122,58,.3);padding:8px 14px;margin-bottom:20px;}
+    .badge-technique span{font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--terre);}
+
+    .option-block{margin-bottom:24px;}
+    .option-label{font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--noir);margin-bottom:12px;display:flex;gap:6px;}
+    .option-label span{color:var(--gris);font-weight:400;}
+
+    /* TAILLES */
+    .sizes{display:flex;gap:8px;flex-wrap:wrap;}
+    .size-btn{width:52px;height:52px;display:flex;align-items:center;justify-content:center;font-family:'Barlow Condensed',sans-serif;font-size:16px;font-weight:700;background:transparent;border:1px solid rgba(10,10,10,.15);cursor:none;transition:all .2s;}
+    .size-btn:hover:not(.soldout){background:var(--noir);color:var(--blanc);border-color:var(--noir);}
+    .size-btn.active{background:var(--noir);color:var(--blanc);border-color:var(--noir);}
+    .size-btn.soldout{opacity:.3;cursor:not-allowed;text-decoration:line-through;}
+    .size-guide{font-size:12px;color:var(--vert);text-decoration:none;font-weight:500;margin-top:8px;display:inline-block;}
+
+    .qty-row{display:flex;align-items:center;gap:12px;margin-bottom:24px;}
+    .qty-ctrl{display:flex;align-items:center;border:1px solid rgba(10,10,10,.15);}
+    .qty-btn{width:44px;height:44px;background:none;border:none;font-size:20px;cursor:none;display:flex;align-items:center;justify-content:center;transition:background .2s;color:var(--noir);}
+    .qty-btn:hover{background:rgba(10,10,10,.05);}
+    .qty-num{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:18px;width:44px;text-align:center;border-left:1px solid rgba(10,10,10,.1);border-right:1px solid rgba(10,10,10,.1);}
+
+    .cta-row{display:flex;flex-direction:column;gap:10px;margin-bottom:28px;}
+    .btn-add{width:100%;padding:17px;background:var(--noir);color:var(--blanc);font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;border:none;cursor:none;transition:background .2s;}
+    .btn-add:hover{background:var(--vert);}
+    .btn-buy{width:100%;padding:17px;background:var(--terre);color:var(--blanc);font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;border:none;cursor:none;transition:background .2s;}
+    .btn-buy:hover{background:#a8642e;}
+
+    .reassurance{display:flex;flex-direction:column;gap:0;border:1px solid rgba(10,10,10,.08);margin-bottom:32px;}
+    .reassurance-item{display:flex;align-items:center;gap:14px;padding:14px 16px;border-bottom:1px solid rgba(10,10,10,.06);font-size:13px;color:#666;}
+    .reassurance-item:last-child{border-bottom:none;}
+    .reassurance-item .icon{font-size:18px;width:24px;text-align:center;flex-shrink:0;}
+    .reassurance-item strong{color:var(--noir);}
+
+    .accordion{border-top:1px solid rgba(10,10,10,.1);}
+    .accordion-item{border-bottom:1px solid rgba(10,10,10,.08);}
+    .accordion-header{display:flex;align-items:center;justify-content:space-between;padding:18px 0;cursor:none;}
+    .accordion-header h4{font-size:13px;font-weight:600;letter-spacing:.04em;}
+    .accordion-arrow{font-size:18px;color:var(--gris);transition:transform .3s;}
+    .accordion-item.open .accordion-arrow{transform:rotate(180deg);}
+    .accordion-body{display:none;padding-bottom:18px;}
+    .accordion-item.open .accordion-body{display:block;}
+    .accordion-body p,.accordion-body li{font-size:13px;color:#777;line-height:1.8;}
+    .accordion-body ul{list-style:none;display:flex;flex-direction:column;gap:6px;}
+    .accordion-body ul li::before{content:'—';color:var(--terre);margin-right:8px;}
+    .specs-table{width:100%;border-collapse:collapse;}
+    .specs-table tr td{padding:8px 0;font-size:13px;border-bottom:1px solid rgba(10,10,10,.05);}
+    .specs-table tr td:first-child{color:#aaa;text-transform:uppercase;font-size:11px;letter-spacing:.07em;width:40%;}
+    .specs-table tr td:last-child{font-weight:600;color:var(--noir);}
+
+    /* SEMELLES NAVIGATION */
+    .semelles-nav{padding:48px 64px;background:#EFECE5;border-top:1px solid rgba(10,10,10,.06);}
+    .semelles-nav h3{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:32px;text-transform:uppercase;color:var(--noir);margin-bottom:24px;}
+    .semelles-nav-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;background:rgba(10,10,10,.08);}
+    .sn-card{background:var(--blanc);padding:24px 20px;text-decoration:none;display:flex;flex-direction:column;gap:8px;transition:background .2s;}
+    .sn-card:hover{background:#e8e4dc;}
+    .sn-card.current{background:var(--noir);}
+    .sn-num{font-family:'Barlow Condensed',sans-serif;font-weight:300;font-size:40px;line-height:1;}
+    .sn-card:not(.current) .sn-num{color:rgba(10,10,10,.1);}
+    .sn-card.current .sn-num{color:rgba(255,255,255,.1);}
+    .sn-name{font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:18px;text-transform:uppercase;}
+    .sn-card:not(.current) .sn-name{color:var(--noir);}
+    .sn-card.current .sn-name{color:var(--blanc);}
+    .sn-terrain{font-size:11px;text-transform:uppercase;letter-spacing:.08em;}
+    .sn-card:not(.current) .sn-terrain{color:var(--vert);}
+    .sn-card.current .sn-terrain{color:rgba(255,255,255,.4);}
+    .sn-price{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:22px;margin-top:4px;}
+    .sn-card:not(.current) .sn-price{color:var(--noir);}
+    .sn-card.current .sn-price{color:var(--terre);}
+
+    /* CART PANEL */
+    #toast{position:fixed;bottom:32px;left:50%;transform:translateX(-50%);background:var(--noir);color:var(--blanc);font-size:13px;letter-spacing:.06em;padding:14px 28px;z-index:9999;opacity:0;transition:opacity .3s;pointer-events:none;white-space:nowrap;}
+    .cart-overlay{position:fixed;inset:0;background:rgba(10,10,10,.5);z-index:800;opacity:0;pointer-events:none;transition:opacity .3s;}
+    .cart-overlay.open{opacity:1;pointer-events:all;}
+    .cart-panel{position:fixed;top:0;right:0;bottom:0;width:420px;background:var(--blanc);z-index:801;transform:translateX(100%);transition:transform .35s ease;display:flex;flex-direction:column;}
+    .cart-panel.open{transform:translateX(0);}
+    .cart-header{padding:24px 28px;border-bottom:1px solid rgba(10,10,10,.08);display:flex;align-items:center;justify-content:space-between;}
+    .cart-header h3{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:20px;text-transform:uppercase;}
+    .cart-close{background:none;border:none;font-size:22px;cursor:none;color:var(--noir);}
+    .cart-items{flex:1;overflow-y:auto;padding:20px 28px;}
+    .cart-empty{text-align:center;padding:60px 0;color:#aaa;font-size:14px;}
+    .cart-item{display:flex;align-items:center;gap:14px;padding:14px 0;border-bottom:1px solid rgba(10,10,10,.06);}
+    .cart-item-thumb{width:60px;height:60px;object-fit:cover;flex-shrink:0;}
+    .cart-item-info{flex:1;}
+    .cart-item-name{font-size:13px;font-weight:600;color:var(--noir);}
+    .cart-item-variant{font-size:11px;color:#aaa;margin-top:2px;}
+    .cart-item-price{font-size:13px;color:var(--gris);}
+    .cart-item-qty{display:flex;align-items:center;gap:8px;margin-top:6px;}
+    .cqty-btn{width:24px;height:24px;background:rgba(10,10,10,.06);border:none;cursor:none;font-size:14px;display:flex;align-items:center;justify-content:center;transition:background .2s;}
+    .cqty-btn:hover{background:var(--noir);color:var(--blanc);}
+    .cqty-num{font-weight:700;font-size:14px;min-width:18px;text-align:center;}
+    .cart-footer{padding:20px 28px;border-top:1px solid rgba(10,10,10,.08);}
+    .cart-total-row{display:flex;justify-content:space-between;margin-bottom:16px;}
+    .cart-total-label{font-size:12px;text-transform:uppercase;letter-spacing:.1em;color:var(--gris);}
+    .cart-total-amount{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:36px;}
+    .checkout-btn{width:100%;padding:15px;background:var(--noir);color:var(--blanc);font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;border:none;cursor:none;transition:background .2s;margin-bottom:8px;}
+    .checkout-btn:hover{background:var(--terre);}
+    .continue-btn{width:100%;padding:11px;background:transparent;color:var(--noir);font-size:12px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;border:1px solid rgba(10,10,10,.15);cursor:none;transition:all .2s;}
+    .continue-btn:hover{border-color:var(--noir);}
+
+    @media(max-width:960px){
+      nav{padding:0 20px;}
+      .nav-center .nav-link{display:none;}
+      .breadcrumb{padding:84px 24px 0;}
+      .product{grid-template-columns:1fr;padding:20px 24px 64px;gap:40px;}
+      .gallery{position:static;}
+      .product-info{padding:0;}
+      .semelles-nav{padding:48px 24px;}
+      .semelles-nav-grid{grid-template-columns:1fr;}
+      .cart-panel{width:100%;}
+    }
+  </style>
+</head>
+<body>
+  <div class="cursor" id="cursor"></div>
+  <div class="cursor-ring" id="cursorRing"></div>
+  <div id="toast"></div>
+  <div class="cart-overlay" id="cartOverlay" onclick="closeCart()"></div>
+  <div class="cart-panel" id="cartPanel">
+    <div class="cart-header"><h3>Panier <span id="cartCount" style="font-size:14px;color:var(--gris);font-weight:400;"></span></h3><button class="cart-close" onclick="closeCart()">✕</button></div>
+    <div class="cart-items" id="cartItems"></div>
+    <div class="cart-footer">
+      <div class="cart-total-row"><span class="cart-total-label">Total</span><span class="cart-total-amount" id="cartTotal">0€</span></div>
+      <button class="checkout-btn" onclick="checkout()">Finaliser la commande</button>
+      <button class="continue-btn" onclick="closeCart()">Continuer mes achats</button>
+    </div>
+  </div>
+
+  <nav>
+    <a href="/" class="nav-logo">Empreinte</a>
+    <div class="nav-center">
+      <a href="/pages/chaussure" class="nav-link">La Chaussure</a>
+      <a href="/pages/semelles" class="nav-link">Les Semelles</a>
+      <a href="/pages/technologie" class="nav-link">Technologie</a>
+      <a href="/pages/commander" class="nav-link">Produits</a>
+    </div>
+    <div class="nav-right">
+      <a href="/pages/compte" class="nav-icon" title="Mon compte"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg></a>
+      <a href="#" class="nav-icon" onclick="openCart();return false;" title="Panier"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg><span class="cart-badge" id="navBadge">0</span></a>
+    </div>
+  </nav>
+
+  <div class="breadcrumb">
+    <a href="/">Accueil</a><span>/</span>
+    <a href="/pages/semelles">Les Semelles</a><span>/</span>
+    <a href="#" style="color:var(--noir);">Semelle Boue &amp; Technique</a>
+  </div>
+
+  <div class="product">
+    <div class="gallery">
+      <div class="gallery-main">
+        <div class="gallery-tag">Semelle 03</div>
+        <div class="gallery-num">03</div>
+        <img src="https://images.unsplash.com/photo-1454496522488-7a8e488e8606?w=900&q=85&fit=crop" alt="Semelle Boue & Technique" id="mainImg"/>
+      </div>
+      <div class="gallery-thumbs">
+        <div class="thumb active" onclick="setImg(this,'https://images.unsplash.com/photo-1454496522488-7a8e488e8606?w=900&q=85&fit=crop')"><img src="https://images.unsplash.com/photo-1454496522488-7a8e488e8606?w=300&q=75&fit=crop" alt=""/></div>
+        <div class="thumb" onclick="setImg(this,'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=900&q=85&fit=crop')"><img src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=300&q=75&fit=crop" alt=""/></div>
+        <div class="thumb" onclick="setImg(this,'https://images.unsplash.com/photo-1551632811-561732d1e306?w=900&q=85&fit=crop')"><img src="https://images.unsplash.com/photo-1551632811-561732d1e306?w=300&q=75&fit=crop" alt=""/></div>
+        <div class="thumb" onclick="setImg(this,'https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=900&q=85&fit=crop')"><img src="https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=300&q=75&fit=crop" alt=""/></div>
+      </div>
+    </div>
+
+    <div class="product-info">
+      <div class="prod-nav">
+        <a href="/pages/commander" class="prod-nav-link">Route</a>
+        <a href="/pages/commander" class="prod-nav-link">Chemin Sec</a>
+        <a href="/pages/produit-semelle-boue" class="prod-nav-link active">Boue &amp; Technique</a>
+      </div>
+      <div class="prod-eyebrow">Semelle Modulable — Compatible toutes bases EMPREINTE</div>
+      <h1 class="prod-name">Semelle<br><em>Boue &amp; Technique</em></h1>
+      <p class="prod-ref">Réf. EMP-SOL-BOUE · Gomme trail crampons 6mm auto-nettoyants</p>
+      <div class="stock-row">
+        <span class="stock-dot low"></span>
+        <div class="stock-bar"><div class="stock-fill low" style="width:20%"></div></div>
+        <span class="stock-text">Stock faible — Plus que 6 paires</span>
+      </div>
+      <div class="badge-technique"><span>Technologie Auto-Nettoyante</span></div>
+      <div class="price-row">
+        <div class="price-main">29€</div>
+        <div class="price-note">Disponible aussi dans le<br>Kit Complet à 180€</div>
+      </div>
+      <div class="terrain-tags">
+        <span class="terrain-tag primary">Montagne</span>
+        <span class="terrain-tag primary">Herbe</span>
+        <span class="terrain-tag primary">Marécages</span>
+        <span class="terrain-tag">Boue</span>
+        <span class="terrain-tag">Neige tassée</span>
+      </div>
+
+      <div class="option-block">
+        <div class="option-label">Pointure — <span id="sizeLabel">Sélectionne une taille</span></div>
+        <div class="sizes">
+          <button class="size-btn soldout">36</button>
+          <button class="size-btn soldout">37</button>
+          <button class="size-btn" onclick="selectSize(this)">38</button>
+          <button class="size-btn" onclick="selectSize(this)">39</button>
+          <button class="size-btn" onclick="selectSize(this)">40</button>
+          <button class="size-btn" onclick="selectSize(this)">41</button>
+          <button class="size-btn" onclick="selectSize(this)">42</button>
+          <button class="size-btn" onclick="selectSize(this)">43</button>
+          <button class="size-btn" onclick="selectSize(this)">44</button>
+          <button class="size-btn" onclick="selectSize(this)">45</button>
+          <button class="size-btn" onclick="selectSize(this)">46</button>
+          <button class="size-btn soldout">47</button>
+          <button class="size-btn soldout">48</button>
+        </div>
+        <a href="#" class="size-guide">→ La taille correspond à la taille de ta chaussure</a>
+      </div>
+
+      <div class="option-block">
+        <div class="option-label">Quantité</div>
+        <div class="qty-row">
+          <div class="qty-ctrl">
+            <button class="qty-btn" onclick="changeQtyProd(-1)">−</button>
+            <span class="qty-num" id="prodQty">1</span>
+            <button class="qty-btn" onclick="changeQtyProd(1)">+</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="cta-row">
+        <button class="btn-add" onclick="addToCartProd()">Ajouter au panier</button>
+        <button class="btn-buy" onclick="buyNow()">Commander maintenant</button>
+      </div>
+
+      <div class="reassurance">
+        <div class="reassurance-item"><span class="icon">🚚</span><div><strong>Livraison offerte</strong> dès 80€ · 2–3 jours ouvrés</div></div>
+        <div class="reassurance-item"><span class="icon">↩️</span><div><strong>Retour gratuit</strong> sous 30 jours</div></div>
+        <div class="reassurance-item"><span class="icon">🔗</span><div>Compatible avec <strong>toutes les bases EMPREINTE</strong></div></div>
+      </div>
+
+      <div class="accordion">
+        <div class="accordion-item open">
+          <div class="accordion-header" onclick="toggleAccordion(this)"><h4>Description</h4><span class="accordion-arrow">⌄</span></div>
+          <div class="accordion-body"><p>La semelle Boue &amp; Technique est le choix extrême pour les conditions adverses. Ses crampons de 6mm à géométrie auto-nettoyante expulsent boue et débris à chaque foulée, garantissant une accroche constante même en terrain saturé. La dureté Shore A spécifique offre un grip supérieur sur herbe mouillée et roche humide. Conçue pour les coureurs qui ne s'arrêtent pas quand le temps se gâte.</p></div>
+        </div>
+        <div class="accordion-item">
+          <div class="accordion-header" onclick="toggleAccordion(this)"><h4>Caractéristiques</h4><span class="accordion-arrow">⌄</span></div>
+          <div class="accordion-body">
+            <table class="specs-table">
+              <tr><td>Type de gomme</td><td>Compound ultra-grip Shore 55A</td></tr>
+              <tr><td>Hauteur crampons</td><td>6mm — Auto-nettoyants</td></tr>
+              <tr><td>Géométrie</td><td>Directionnelle multi-axiale</td></tr>
+              <tr><td>Poids</td><td>82g (taille 42)</td></tr>
+              <tr><td>Fixation</td><td>Slide-Lock™ compatible</td></tr>
+              <tr><td>Terrain optimal</td><td>Boue, herbe, neige, montagne</td></tr>
+            </table>
+          </div>
+        </div>
+        <div class="accordion-item">
+          <div class="accordion-header" onclick="toggleAccordion(this)"><h4>Compatibilité</h4><span class="accordion-arrow">⌄</span></div>
+          <div class="accordion-body"><p>Compatible avec toutes les bases EMPREINTE (Taille 38 à 46). La semelle est pré-montée avec le système Slide-Lock™ femelle. Idéale pour trail technique, skyrunning et compétitions de montagne. Déconseillé sur surfaces dures prolongées — utiliser la Semelle Route pour l'asphalte.</p></div>
+        </div>
+        <div class="accordion-item">
+          <div class="accordion-header" onclick="toggleAccordion(this)"><h4>Dans la boîte</h4><span class="accordion-arrow">⌄</span></div>
+          <div class="accordion-body">
+            <ul>
+              <li>1 paire de semelles Boue &amp; Technique (gauche + droite)</li>
+              <li>Sachet de transport renforcé</li>
+              <li>Brosse de nettoyage crampons</li>
+              <li>Guide d'entretien et de pose</li>
+              <li>Sticker EMPREINTE</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- NAVIGATION SEMELLES -->
+  <section class="semelles-nav">
+    <h3>Les autres semelles</h3>
+    <div class="semelles-nav-grid">
+      <a href="/pages/commander" class="sn-card">
+        <div class="sn-num">01</div>
+        <div class="sn-name">Route &amp; Urbain</div>
+        <div class="sn-terrain">Bitume · Parcs · Pistes</div>
+        <div class="sn-price">29€</div>
+      </a>
+      <a href="/pages/commander" class="sn-card">
+        <div class="sn-num">02</div>
+        <div class="sn-name">Chemin Sec</div>
+        <div class="sn-terrain">Forêt · Terre · Graviers</div>
+        <div class="sn-price">29€</div>
+      </a>
+      <div class="sn-card current">
+        <div class="sn-num">03</div>
+        <div class="sn-name">Boue &amp; Technique</div>
+        <div class="sn-terrain">Montagne · Herbe · Marécages</div>
+        <div class="sn-price">29€</div>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    const cursor=document.getElementById('cursor'),ring=document.getElementById('cursorRing');
+    let mx=0,my=0,rx=0,ry=0;
+    document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;});
+    function anim(){cursor.style.left=mx+'px';cursor.style.top=my+'px';rx+=(mx-rx)*.14;ry+=(my-ry)*.14;ring.style.left=rx+'px';ring.style.top=ry+'px';requestAnimationFrame(anim);}
+    anim();
+    document.querySelectorAll('a,button').forEach(el=>{
+      el.addEventListener('mouseenter',()=>{cursor.style.width='6px';cursor.style.height='6px';ring.style.width='52px';ring.style.height='52px';});
+      el.addEventListener('mouseleave',()=>{cursor.style.width='10px';cursor.style.height='10px';ring.style.width='36px';ring.style.height='36px';});
+    });
+    function setImg(el,src){document.getElementById('mainImg').src=src;document.querySelectorAll('.thumb').forEach(t=>t.classList.remove('active'));el.classList.add('active');}
+    let selectedSize=null,qty=1;
+    function selectSize(el){if(el.classList.contains('soldout'))return;document.querySelectorAll('.size-btn').forEach(b=>b.classList.remove('active'));el.classList.add('active');selectedSize=el.textContent;document.getElementById('sizeLabel').textContent='Taille '+selectedSize;}
+    function changeQtyProd(d){qty=Math.max(1,qty+d);document.getElementById('prodQty').textContent=qty;}
+    function getCart(){return JSON.parse(localStorage.getItem('empreinte-cart')||'[]');}
+    function saveCart(c){localStorage.setItem('empreinte-cart',JSON.stringify(c));}
+    function addToCartProd(){
+      if(!selectedSize){showToast('Sélectionne une taille');return;}
+      const name='Semelle Boue & Technique';
+      const variant='Taille '+selectedSize;
+      const cart=getCart();const key=name+'|'+variant;
+      const ex=cart.find(i=>i.key===key);
+      if(ex){ex.qty+=qty;}else{cart.push({key,name,variant,price:29,qty,img:'https://images.unsplash.com/photo-1454496522488-7a8e488e8606?w=120&q=70&fit=crop'});}
+      saveCart(cart);renderCart();openCart();
+    }
+    function buyNow(){addToCartProd();setTimeout(()=>window.location.href='/pages/commander',400);}
+    function openCart(){document.getElementById('cartOverlay').classList.add('open');document.getElementById('cartPanel').classList.add('open');renderCart();}
+    function closeCart(){document.getElementById('cartOverlay').classList.remove('open');document.getElementById('cartPanel').classList.remove('open');}
+    function renderCart(){
+      const cart=getCart();
+      const total=cart.reduce((s,i)=>s+i.price*i.qty,0);
+      const count=cart.reduce((s,i)=>s+i.qty,0);
+      document.getElementById('cartTotal').textContent=total+'€';
+      document.getElementById('navBadge').textContent=count;
+      document.getElementById('cartCount').textContent=count>0?'('+count+')':'';
+      const container=document.getElementById('cartItems');
+      if(cart.length===0){container.innerHTML='<div class="cart-empty">Ton panier est vide.</div>';return;}
+      container.innerHTML=cart.map((item,idx)=>`<div class="cart-item"><img class="cart-item-thumb" src="${item.img||''}" alt=""/><div class="cart-item-info"><div class="cart-item-name">${item.name}</div><div class="cart-item-variant">${item.variant||''}</div><div class="cart-item-price">${item.price}€</div><div class="cart-item-qty"><button class="cqty-btn" onclick="cQty(${idx},-1)">−</button><span class="cqty-num">${item.qty}</span><button class="cqty-btn" onclick="cQty(${idx},1)">+</button></div></div></div>`).join('');
+    }
+    function cQty(idx,d){const cart=getCart();cart[idx].qty+=d;if(cart[idx].qty<=0)cart.splice(idx,1);saveCart(cart);renderCart();}
+    function checkout(){showToast('Redirection vers le paiement...');setTimeout(closeCart,1500);}
+    function toggleAccordion(header){const item=header.parentElement;const wasOpen=item.classList.contains('open');document.querySelectorAll('.accordion-item').forEach(i=>i.classList.remove('open'));if(!wasOpen)item.classList.add('open');}
+    function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.style.opacity='1';setTimeout(()=>t.style.opacity='0',2500);}
+    renderCart();
+  </script>
+</body>
+</html>

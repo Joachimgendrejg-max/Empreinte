@@ -1,0 +1,1089 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>EMPREINTE — Laisse ta marque.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,300;0,400;0,700;0,800;0,900;1,700;1,900&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --noir: #0A0A0A;
+      --blanc: #F5F2ED;
+      --terre: #C47A3A;
+      --vert: #2E5C3A;
+      --gris: #888;
+    }
+
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--blanc);
+      color: var(--noir);
+      overflow-x: hidden;
+      cursor: none;
+    }
+
+    /* ─── CURSOR ────────────────────────────────────────── */
+    .cursor {
+      width: 10px; height: 10px;
+      background: var(--terre);
+      border-radius: 50%;
+      position: fixed; top: 0; left: 0;
+      pointer-events: none; z-index: 9999;
+      transform: translate(-50%, -50%);
+      transition: width 0.2s, height 0.2s, background 0.2s;
+    }
+    .cursor-ring {
+      width: 36px; height: 36px;
+      border: 1px solid rgba(196,122,58,0.5);
+      border-radius: 50%;
+      position: fixed; top: 0; left: 0;
+      pointer-events: none; z-index: 9998;
+      transform: translate(-50%, -50%);
+      transition: all 0.12s ease-out;
+    }
+
+    /* ─── NAV ────────────────────────────────────────────── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 500;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 40px; height: 64px;
+      mix-blend-mode: difference;
+    }
+
+    .nav-logo {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-weight: 900; font-size: 20px;
+      letter-spacing: 0.18em; text-transform: uppercase;
+      color: var(--blanc); text-decoration: none;
+    }
+
+    .nav-center{display:flex;align-items:center;gap:32px;}
+    .nav-link{font-size:11px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;color:var(--blanc);text-decoration:none;opacity:.7;transition:opacity .2s;}
+    .nav-link:hover,.nav-link.active{opacity:1;}
+    .nav-right{display:flex;align-items:center;gap:4px;}
+    .nav-icon{width:40px;height:40px;display:flex;align-items:center;justify-content:center;color:rgba(245,242,237,.6);text-decoration:none;transition:color .2s;position:relative;}
+    .nav-icon:hover{color:var(--blanc);}
+    .cart-badge{background:var(--terre);color:#fff;border-radius:50%;width:16px;height:16px;display:inline-flex;align-items:center;justify-content:center;font-size:8px;font-weight:900;position:absolute;top:5px;right:3px;}
+
+    /* ─── HERO ───────────────────────────────────────────── */
+    .hero {
+      height: 100vh; position: relative;
+      overflow: hidden; display: flex; align-items: flex-end;
+    }
+
+    .hero-img {
+      position: absolute; inset: 0;
+      background-image: url('https://images.unsplash.com/photo-1551632811-561732d1e306?w=1800&q=85&fit=crop');
+      background-size: cover; background-position: center 30%;
+      transform: scale(1.05);
+      transition: transform 8s ease-out;
+    }
+    .hero-img.loaded { transform: scale(1); }
+
+    .hero-overlay {
+      position: absolute; inset: 0;
+      background: linear-gradient(to top, rgba(10,10,10,0.85) 0%, rgba(10,10,10,0.1) 60%, transparent 100%);
+    }
+
+    .hero-content {
+      position: relative; z-index: 2;
+      padding: 0 40px 64px;
+      width: 100%;
+    }
+
+    .hero-eyebrow {
+      font-size: 11px; font-weight: 500; letter-spacing: 0.2em;
+      text-transform: uppercase; color: var(--terre);
+      margin-bottom: 16px;
+      display: flex; align-items: center; gap: 12px;
+    }
+    .hero-eyebrow::before {
+      content: ''; display: block;
+      width: 28px; height: 1px; background: var(--terre);
+    }
+
+    .hero h1 {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-weight: 900; font-style: italic;
+      font-size: clamp(88px, 14vw, 200px);
+      line-height: 0.88; text-transform: uppercase;
+      color: var(--blanc); letter-spacing: -0.02em;
+      margin-bottom: 40px;
+    }
+
+    .hero-bottom {
+      display: flex; align-items: flex-end;
+      justify-content: space-between;
+    }
+
+    .hero-desc {
+      font-size: 15px; color: rgba(245,242,237,0.6);
+      max-width: 340px; line-height: 1.7; font-weight: 300;
+    }
+
+    .hero-cta {
+      display: flex; align-items: center; gap: 16px;
+    }
+    .btn-hero {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-weight: 800; font-size: 13px; letter-spacing: 0.14em;
+      text-transform: uppercase; color: var(--noir);
+      background: var(--blanc); padding: 14px 32px;
+      text-decoration: none; transition: background 0.2s;
+    }
+    .btn-hero:hover { background: var(--terre); color: var(--blanc); }
+
+    .scroll-hint {
+      position: absolute; right: 40px; top: 50%;
+      transform: translateY(-50%) rotate(90deg);
+      font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase;
+      color: rgba(245,242,237,0.35); white-space: nowrap;
+    }
+
+    /* ─── TICKER ─────────────────────────────────────────── */
+    .ticker {
+      background: var(--noir); overflow: hidden;
+      padding: 14px 0; border-top: 1px solid #1a1a1a;
+    }
+    .ticker-track {
+      display: flex; gap: 0;
+      animation: ticker 24s linear infinite;
+      width: max-content;
+    }
+    .ticker-item {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-weight: 700; font-size: 13px; letter-spacing: 0.12em;
+      text-transform: uppercase; color: rgba(245,242,237,0.4);
+      padding: 0 40px; white-space: nowrap;
+    }
+    .ticker-item span { color: var(--terre); margin-right: 40px; }
+    @keyframes ticker {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+
+    /* ─── INTRO SPLIT ─────────────────────────────────────── */
+    .intro {
+      display: grid; grid-template-columns: 1fr 1fr;
+      min-height: 90vh;
+    }
+    .intro-left {
+      background: var(--blanc);
+      padding: 100px 64px;
+      display: flex; flex-direction: column; justify-content: center;
+    }
+    .intro-left .label {
+      font-size: 10px; font-weight: 700; letter-spacing: 0.2em;
+      text-transform: uppercase; color: var(--vert);
+      margin-bottom: 28px;
+    }
+    .intro-left h2 {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-weight: 900; font-size: clamp(52px, 5vw, 76px);
+      text-transform: uppercase; line-height: 0.95;
+      color: var(--noir); margin-bottom: 32px;
+    }
+    .intro-left h2 em { font-style: italic; color: var(--terre); }
+    .intro-left p {
+      font-size: 16px; line-height: 1.8; color: #555;
+      margin-bottom: 16px; font-weight: 300;
+    }
+    .intro-stats {
+      display: flex; gap: 0; margin-top: 48px;
+      border-top: 1px solid rgba(10,10,10,0.1);
+    }
+    .istat {
+      flex: 1; padding: 28px 0; padding-right: 24px;
+      border-right: 1px solid rgba(10,10,10,0.1);
+    }
+    .istat:last-child { border-right: none; padding-right: 0; padding-left: 24px; }
+    .istat-n {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-weight: 900; font-size: 48px; color: var(--noir); line-height: 1;
+    }
+    .istat-l { font-size: 11px; color: var(--gris); margin-top: 4px; letter-spacing: 0.06em; }
+
+    .intro-right {
+      position: relative; overflow: hidden;
+    }
+    .intro-right img {
+      width: 100%; height: 100%;
+      object-fit: cover; object-position: center;
+      display: block;
+      transition: transform 0.6s ease;
+    }
+    .intro-right:hover img { transform: scale(1.04); }
+
+    /* ─── FULL PHOTO ─────────────────────────────────────── */
+    .full-photo {
+      height: 70vh; position: relative; overflow: hidden;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .full-photo img {
+      position: absolute; inset: 0;
+      width: 100%; height: 100%; object-fit: cover;
+      object-position: center 40%;
+    }
+    .full-photo-overlay {
+      position: absolute; inset: 0;
+      background: rgba(10,10,10,0.45);
+    }
+    .full-photo-text {
+      position: relative; z-index: 2;
+      text-align: center;
+    }
+    .full-photo-text h2 {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-weight: 900; font-style: italic;
+      font-size: clamp(64px, 10vw, 140px);
+      text-transform: uppercase; color: var(--blanc);
+      line-height: 0.9; letter-spacing: -0.01em;
+    }
+    .full-photo-text h2 span { color: var(--terre); }
+
+    /* ─── MÉCANISME ───────────────────────────────────────── */
+    .mecanism {
+      background: var(--noir); padding: 120px 64px;
+    }
+    .mecanism-header {
+      display: flex; align-items: baseline;
+      justify-content: space-between; margin-bottom: 80px;
+      border-bottom: 1px solid #1e1e1e; padding-bottom: 32px;
+    }
+    .mecanism-header h2 {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-weight: 900; font-size: clamp(48px, 6vw, 80px);
+      text-transform: uppercase; color: var(--blanc); line-height: 0.95;
+    }
+    .mecanism-header h2 em { font-style: italic; color: var(--terre); }
+    .mecanism-header p {
+      font-size: 14px; color: #555; max-width: 300px;
+      line-height: 1.7; text-align: right;
+    }
+
+    .steps {
+      display: grid; grid-template-columns: repeat(4, 1fr);
+      gap: 1px; background: #1a1a1a;
+    }
+    .step {
+      background: var(--noir); padding: 48px 36px;
+      transition: background 0.3s;
+    }
+    .step:hover { background: #111; }
+    .step-n {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-weight: 300; font-size: 72px; color: #1e1e1e;
+      line-height: 1; margin-bottom: 24px;
+    }
+    .step-title {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-weight: 800; font-size: 20px; letter-spacing: 0.08em;
+      text-transform: uppercase; color: var(--blanc); margin-bottom: 12px;
+    }
+    .step-desc {
+      font-size: 13px; line-height: 1.8; color: #555;
+    }
+    .step-clic {
+      margin-top: 24px;
+      font-family: 'Barlow Condensed', sans-serif;
+      font-weight: 900; font-size: 18px;
+      letter-spacing: 0.15em; color: var(--terre);
+    }
+
+    /* ─── SEMELLES ───────────────────────────────────────── */
+    .semelles { background: var(--blanc); }
+    .semelles-header {
+      padding: 100px 64px 64px;
+      display: flex; align-items: flex-end; justify-content: space-between;
+      border-bottom: 1px solid rgba(10,10,10,0.08);
+    }
+    .semelles-header h2 {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-weight: 900; font-size: clamp(52px, 7vw, 96px);
+      text-transform: uppercase; line-height: 0.9; color: var(--noir);
+    }
+    .semelles-header h2 em { font-style: italic; color: var(--terre); }
+    .semelles-header p {
+      font-size: 14px; color: var(--gris); max-width: 260px;
+      line-height: 1.7; text-align: right;
+    }
+
+    .semelles-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr);
+      gap: 1px; background: rgba(10,10,10,0.08);
+    }
+
+    .semelle {
+      background: var(--blanc); overflow: hidden;
+      position: relative; cursor: none;
+    }
+
+    .semelle-photo {
+      height: 420px; overflow: hidden; position: relative;
+    }
+    .semelle-photo img {
+      width: 100%; height: 100%;
+      object-fit: cover; object-position: center;
+      display: block;
+      transition: transform 0.7s ease;
+    }
+    .semelle:hover .semelle-photo img { transform: scale(1.06); }
+
+    .semelle-photo-overlay {
+      position: absolute; inset: 0;
+      background: linear-gradient(to top, rgba(10,10,10,0.6) 0%, transparent 50%);
+    }
+
+    .semelle-num {
+      position: absolute; top: 20px; left: 24px;
+      font-family: 'Barlow Condensed', sans-serif;
+      font-weight: 300; font-size: 13px; letter-spacing: 0.15em;
+      color: rgba(245,242,237,0.6); text-transform: uppercase;
+    }
+
+    .semelle-tag-photo {
+      position: absolute; bottom: 20px; left: 24px;
+      font-family: 'Barlow Condensed', sans-serif;
+      font-weight: 800; font-size: 28px; text-transform: uppercase;
+      color: var(--blanc); letter-spacing: 0.02em; line-height: 1;
+    }
+
+    .semelle-body {
+      padding: 32px 28px 36px;
+      border-bottom: 1px solid rgba(10,10,10,0.08);
+    }
+    .semelle-body p {
+      font-size: 13px; line-height: 1.8; color: #666;
+      margin-bottom: 24px;
+    }
+    .semelle-specs {
+      display: flex; flex-direction: column; gap: 0;
+    }
+    .sspec {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 10px 0; border-bottom: 1px solid rgba(10,10,10,0.06);
+      font-size: 12px;
+    }
+    .sspec:last-child { border-bottom: none; }
+    .sspec-k { color: #aaa; text-transform: uppercase; letter-spacing: 0.07em; }
+    .sspec-v { font-weight: 600; color: var(--noir); }
+
+    .semelle-foot {
+      padding: 20px 28px;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .semelle-weight-tag {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 13px; font-weight: 700; letter-spacing: 0.1em;
+      text-transform: uppercase; color: var(--vert);
+    }
+    .semelle-add {
+      font-size: 11px; font-weight: 700; letter-spacing: 0.1em;
+      text-transform: uppercase; color: var(--noir);
+      background: none; border: 1px solid rgba(10,10,10,0.2);
+      padding: 8px 16px; cursor: none; transition: all 0.2s;
+    }
+    .semelle-add:hover { background: var(--noir); color: var(--blanc); }
+
+    /* ─── MATERIAUX ──────────────────────────────────────── */
+    .materiaux {
+      display: grid; grid-template-columns: 1fr 1fr;
+      min-height: 80vh;
+    }
+    .mat-photo {
+      position: relative; overflow: hidden;
+    }
+    .mat-photo img {
+      width: 100%; height: 100%;
+      object-fit: cover; object-position: center;
+      display: block;
+    }
+    .mat-content {
+      background: var(--noir); padding: 100px 64px;
+      display: flex; flex-direction: column; justify-content: center;
+    }
+    .mat-content .label {
+      font-size: 10px; font-weight: 700; letter-spacing: 0.2em;
+      text-transform: uppercase; color: var(--vert);
+      margin-bottom: 28px;
+    }
+    .mat-content h2 {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-weight: 900; font-size: clamp(48px, 4.5vw, 68px);
+      text-transform: uppercase; line-height: 0.95; color: var(--blanc);
+      margin-bottom: 56px;
+    }
+    .mat-content h2 em { font-style: italic; color: var(--terre); }
+
+    .mat-list { display: flex; flex-direction: column; gap: 0; }
+    .mat-item {
+      padding: 28px 0; border-top: 1px solid #1a1a1a;
+    }
+    .mat-item:last-child { border-bottom: 1px solid #1a1a1a; }
+    .mat-item-top {
+      display: flex; align-items: baseline;
+      justify-content: space-between; margin-bottom: 10px;
+    }
+    .mat-name {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-weight: 800; font-size: 22px; letter-spacing: 0.08em;
+      text-transform: uppercase; color: var(--terre);
+    }
+    .mat-part {
+      font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase;
+      color: #444;
+    }
+    .mat-desc {
+      font-size: 13px; line-height: 1.8; color: #555;
+    }
+    .mat-highlight {
+      margin-top: 10px; font-size: 12px; color: var(--vert);
+      font-weight: 500; letter-spacing: 0.04em;
+    }
+
+    /* ─── FULL PHOTO 2 ───────────────────────────────────── */
+    .mid-photo {
+      height: 60vh; position: relative; overflow: hidden;
+      display: flex; align-items: center;
+    }
+    .mid-photo img {
+      position: absolute; inset: 0;
+      width: 100%; height: 100%; object-fit: cover;
+      object-position: center 20%;
+    }
+    .mid-photo-overlay {
+      position: absolute; inset: 0;
+      background: linear-gradient(90deg, rgba(10,10,10,0.75) 0%, transparent 60%);
+    }
+    .mid-photo-content {
+      position: relative; z-index: 2; padding: 0 64px;
+    }
+    .mid-photo-content p {
+      font-size: 13px; letter-spacing: 0.12em; text-transform: uppercase;
+      color: var(--terre); margin-bottom: 16px;
+    }
+    .mid-photo-content h3 {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-weight: 900; font-style: italic;
+      font-size: clamp(48px, 6vw, 84px);
+      text-transform: uppercase; color: var(--blanc); line-height: 0.95;
+      max-width: 640px;
+    }
+
+    /* ─── PRICING ────────────────────────────────────────── */
+    .pricing { padding: 120px 64px; background: var(--blanc); }
+    .pricing-header {
+      display: flex; align-items: flex-end; justify-content: space-between;
+      margin-bottom: 72px; border-bottom: 1px solid rgba(10,10,10,0.1);
+      padding-bottom: 32px;
+    }
+    .pricing-header h2 {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-weight: 900; font-size: clamp(48px, 6vw, 84px);
+      text-transform: uppercase; line-height: 0.9; color: var(--noir);
+    }
+    .pricing-header h2 em { font-style: italic; color: var(--terre); }
+    .pricing-header p { font-size: 13px; color: var(--gris); max-width: 240px; text-align: right; line-height: 1.6; }
+
+    .pricing-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr);
+      gap: 1px; background: rgba(10,10,10,0.1);
+    }
+    .pcard {
+      background: var(--blanc); padding: 48px 36px;
+      transition: background 0.3s;
+    }
+    .pcard.featured { background: var(--noir); }
+    .pcard:not(.featured):hover { background: #f0ede6; }
+
+    .pcard-badge {
+      display: inline-block; background: var(--terre);
+      color: var(--blanc); font-size: 9px; font-weight: 800;
+      letter-spacing: 0.14em; text-transform: uppercase;
+      padding: 3px 10px; margin-bottom: 20px;
+    }
+
+    .pcard-name {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-weight: 900; font-size: 28px; text-transform: uppercase;
+      letter-spacing: 0.04em; color: var(--noir); margin-bottom: 8px;
+    }
+    .pcard.featured .pcard-name { color: var(--blanc); }
+
+    .pcard-desc {
+      font-size: 13px; line-height: 1.7; color: #888; margin-bottom: 32px;
+    }
+    .pcard.featured .pcard-desc { color: #555; }
+
+    .pcard-price {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-weight: 900; font-size: 72px; line-height: 1;
+      color: var(--noir); margin-bottom: 4px;
+    }
+    .pcard.featured .pcard-price { color: var(--blanc); }
+    .pcard-unit { font-size: 11px; color: #aaa; letter-spacing: 0.08em; margin-bottom: 36px; text-transform: uppercase; }
+
+    .pcard-list { list-style: none; margin-bottom: 36px; display: flex; flex-direction: column; gap: 10px; }
+    .pcard-list li { font-size: 13px; color: #666; display: flex; align-items: center; gap: 10px; }
+    .pcard-list li::before { content: '—'; color: var(--terre); font-weight: 700; flex-shrink: 0; }
+    .pcard.featured .pcard-list li { color: #555; }
+
+    .pcard-btn {
+      width: 100%; padding: 14px;
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 13px; font-weight: 800; letter-spacing: 0.1em;
+      text-transform: uppercase; cursor: none;
+      transition: all 0.2s; border: none;
+    }
+    .pcard:not(.featured) .pcard-btn {
+      background: var(--noir); color: var(--blanc);
+    }
+    .pcard:not(.featured) .pcard-btn:hover { background: var(--terre); }
+    .pcard.featured .pcard-btn {
+      background: var(--terre); color: var(--blanc);
+    }
+    .pcard.featured .pcard-btn:hover { background: #a8642e; }
+
+    /* ─── VALEURS ────────────────────────────────────────── */
+    .valeurs {
+      background: var(--noir); padding: 100px 64px;
+      display: grid; grid-template-columns: 1fr 1fr 1fr;
+      gap: 1px; background: #111;
+    }
+    .valeur {
+      background: var(--noir); padding: 64px 48px;
+    }
+    .valeur-num {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-weight: 300; font-size: 60px; line-height: 1;
+      color: #1a1a1a; margin-bottom: 20px;
+    }
+    .valeur-title {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-weight: 800; font-size: 20px; letter-spacing: 0.06em;
+      text-transform: uppercase; color: var(--blanc); margin-bottom: 12px;
+    }
+    .valeur-desc { font-size: 13px; line-height: 1.8; color: #555; }
+
+    /* ─── CTA FINAL ──────────────────────────────────────── */
+    .cta-final {
+      height: 65vh; position: relative; overflow: hidden;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .cta-final img {
+      position: absolute; inset: 0;
+      width: 100%; height: 100%;
+      object-fit: cover; object-position: center 35%;
+    }
+    .cta-final-overlay {
+      position: absolute; inset: 0;
+      background: rgba(10,10,10,0.6);
+    }
+    .cta-final-content {
+      position: relative; z-index: 2;
+      text-align: center;
+    }
+    .cta-final-content h2 {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-weight: 900; font-style: italic;
+      font-size: clamp(56px, 9vw, 120px);
+      text-transform: uppercase; color: var(--blanc);
+      line-height: 0.9; margin-bottom: 40px;
+    }
+    .cta-final-content h2 em { color: var(--terre); font-style: normal; }
+    .btn-cta {
+      display: inline-block;
+      font-family: 'Barlow Condensed', sans-serif;
+      font-weight: 800; font-size: 14px; letter-spacing: 0.12em;
+      text-transform: uppercase; text-decoration: none;
+      background: var(--blanc); color: var(--noir);
+      padding: 16px 48px; transition: all 0.2s;
+    }
+    .btn-cta:hover { background: var(--terre); color: var(--blanc); }
+
+    /* ─── FOOTER ─────────────────────────────────────────── */
+    footer {
+      background: var(--noir); padding: 80px 64px 48px;
+      border-top: 1px solid #1a1a1a;
+    }
+    .footer-top {
+      display: grid; grid-template-columns: 2fr 1fr 1fr 1fr;
+      gap: 48px; margin-bottom: 64px; padding-bottom: 64px;
+      border-bottom: 1px solid #1a1a1a;
+    }
+    .footer-logo {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-weight: 900; font-size: 28px; letter-spacing: 0.14em;
+      text-transform: uppercase; color: var(--blanc);
+      display: block; margin-bottom: 16px;
+    }
+    .footer-logo span { color: var(--terre); }
+    .footer-tagline { font-size: 13px; color: #444; line-height: 1.7; max-width: 220px; }
+
+    .footer-col h5 {
+      font-size: 10px; font-weight: 700; letter-spacing: 0.18em;
+      text-transform: uppercase; color: #444; margin-bottom: 20px;
+    }
+    .footer-col ul { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+    .footer-col ul li a {
+      font-size: 14px; color: #555; text-decoration: none; transition: color 0.2s;
+    }
+    .footer-col ul li a:hover { color: var(--blanc); }
+
+    .footer-bottom {
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    .footer-copy { font-size: 11px; color: #333; letter-spacing: 0.06em; }
+    .footer-socials { display: flex; gap: 20px; }
+    .fsocial {
+      font-size: 11px; font-weight: 700; letter-spacing: 0.1em;
+      text-transform: uppercase; color: #444; text-decoration: none;
+      transition: color 0.2s;
+    }
+    .fsocial:hover { color: var(--blanc); }
+
+    /* ─── RESPONSIVE ─────────────────────────────────────── */
+    @media (max-width: 960px) {
+      .intro { grid-template-columns: 1fr; }
+      .intro-right { height: 50vh; }
+      .semelles-grid { grid-template-columns: 1fr; }
+      .materiaux { grid-template-columns: 1fr; }
+      .mat-photo { height: 50vh; }
+      .pricing-grid { grid-template-columns: 1fr; gap: 1px; }
+      .steps { grid-template-columns: 1fr 1fr; }
+      .valeurs { grid-template-columns: 1fr; }
+      .footer-top { grid-template-columns: 1fr 1fr; }
+      nav { padding: 0 20px; }
+      .hero-content { padding: 0 20px 48px; }
+      .hero h1 { font-size: 72px; }
+      .intro-left { padding: 64px 32px; }
+      .mecanism { padding: 80px 32px; }
+      .semelles-header { padding: 64px 32px 40px; flex-direction: column; gap: 20px; }
+      .semelles-header p { text-align: left; }
+      .mat-content { padding: 64px 32px; }
+      .pricing { padding: 80px 32px; }
+      .pricing-header { flex-direction: column; gap: 16px; align-items: flex-start; }
+      .pricing-header p { text-align: left; }
+      .mid-photo-content { padding: 0 32px; }
+      footer { padding: 64px 32px 40px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- CURSOR -->
+  <div class="cursor" id="cursor"></div>
+  <div class="cursor-ring" id="cursorRing"></div>
+
+  <!-- NAV -->
+  <nav>
+    <a href="/" class="nav-logo">Empreinte</a>
+    <div class="nav-center">
+      <a href="/pages/chaussure" class="nav-link">La Chaussure</a>
+      <a href="/pages/semelles" class="nav-link">Les Semelles</a>
+      <a href="/pages/technologie" class="nav-link">Technologie</a>
+      <a href="/pages/commander" class="nav-link">Produits</a>
+    </div>
+    <div class="nav-right">
+      <a href="/pages/compte" class="nav-icon" title="Mon compte"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg></a>
+      <a href="/pages/commander" class="nav-icon" title="Panier"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg><span class="cart-badge" id="navBadge" style="display:none"></span></a>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-img" id="heroImg"></div>
+    <div class="hero-overlay"></div>
+    <div class="scroll-hint">Défiler pour explorer</div>
+    <div class="hero-content">
+      <div class="hero-eyebrow">Chaussure running modulable — 2025</div>
+      <h1>Laisse<br>ta marque.</h1>
+      <div class="hero-bottom">
+        <p class="hero-desc">Une chaussure haute performance. Trois semelles interchangeables. Tous les terrains, une seule paire.</p>
+        <div class="hero-cta">
+          <a href="/pages/commander" class="btn-hero">Découvrir le kit — 180€</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TICKER -->
+  <div class="ticker">
+    <div class="ticker-track">
+      <span class="ticker-item"><span>✦</span> Système Slide-Lock™ breveté</span>
+      <span class="ticker-item"><span>✦</span> Semelle PEBA — 1 500 km garantis</span>
+      <span class="ticker-item"><span>✦</span> Mesh Matryx Kevlar indéchirable</span>
+      <span class="ticker-item"><span>✦</span> 3 semelles modulables incluses</span>
+      <span class="ticker-item"><span>✦</span> Pochette Dirty-Bag offerte</span>
+      <span class="ticker-item"><span>✦</span> Fabriquée pour durer 3× plus longtemps</span>
+      <span class="ticker-item"><span>✦</span> Système Slide-Lock™ breveté</span>
+      <span class="ticker-item"><span>✦</span> Semelle PEBA — 1 500 km garantis</span>
+      <span class="ticker-item"><span>✦</span> Mesh Matryx Kevlar indéchirable</span>
+      <span class="ticker-item"><span>✦</span> 3 semelles modulables incluses</span>
+      <span class="ticker-item"><span>✦</span> Pochette Dirty-Bag offerte</span>
+      <span class="ticker-item"><span>✦</span> Fabriquée pour durer 3× plus longtemps</span>
+    </div>
+  </div>
+
+  <!-- INTRO SPLIT -->
+  <section class="intro" id="concept">
+    <div class="intro-left">
+      <div class="label">Le problème résolu</div>
+      <h2>Fini les<br><em>3 paires</em><br>dans ton placard.</h2>
+      <p>Le runner polyvalent court sur bitume le mardi, en forêt le jeudi, et attaque un trail boueux le week-end. Résultat habituel : trois paires, trois usures, trois fois le budget.</p>
+      <p>EMPREINTE a conçu la première chaussure de running à semelles modulaires. Tu gardes la même base haute performance. Tu changes la semelle selon ton terrain, en moins de 10 secondes.</p>
+      <div class="intro-stats">
+        <div class="istat">
+          <div class="istat-n">1 500</div>
+          <div class="istat-l">km de durée de vie</div>
+        </div>
+        <div class="istat">
+          <div class="istat-n">×3</div>
+          <div class="istat-l">plus longtemps qu'une standard</div>
+        </div>
+        <div class="istat">
+          <div class="istat-n">60g</div>
+          <div class="istat-l">par semelle</div>
+        </div>
+      </div>
+    </div>
+    <div class="intro-right">
+      <img src="https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=900&q=85&fit=crop" alt="Montagne trail" loading="lazy" />
+    </div>
+  </section>
+
+  <!-- FULL PHOTO BREAK -->
+  <div class="full-photo">
+    <img src="https://images.unsplash.com/photo-1551632811-561732d1e306?w=1800&q=85&fit=crop&crop=right" alt="Trail running montagne" loading="lazy" />
+    <div class="full-photo-overlay"></div>
+    <div class="full-photo-text">
+      <h2>Changer de<br><span>terrain.</span><br>En 10 secondes.</h2>
+    </div>
+  </div>
+
+  <!-- MÉCANISME -->
+  <section class="mecanism" id="mecanisme">
+    <div class="mecanism-header">
+      <h2>Slide-Lock™<br><em>En 4 gestes.</em></h2>
+      <p>Conçu pour être intuitif dès la première utilisation, même avec des gants ou des mains boueuses.</p>
+    </div>
+    <div class="steps">
+      <div class="step">
+        <div class="step-n">01</div>
+        <div class="step-title">Pose</div>
+        <p class="step-desc">Glisse la pointe de la chaussure dans l'encoche avant de la nouvelle semelle.</p>
+      </div>
+      <div class="step">
+        <div class="step-n">02</div>
+        <div class="step-title">Glisse</div>
+        <p class="step-desc">Appuie ton poids pour faire coulisser la chaussure dans les rails polymère rigide-flexible.</p>
+      </div>
+      <div class="step">
+        <div class="step-n">03</div>
+        <div class="step-title">Clip</div>
+        <p class="step-desc">Pose le talon. Le loquet arrière s'enclenche automatiquement. Un son confirme le verrouillage.</p>
+        <div class="step-clic">— CLIC —</div>
+      </div>
+      <div class="step">
+        <div class="step-n">04</div>
+        <div class="step-title">Étanchéité</div>
+        <p class="step-desc">Le joint Seal-Lip en silicone crée une barrière hermétique contre la boue et l'eau sur tout le périmètre.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- SEMELLES -->
+  <section class="semelles" id="semelles">
+    <div class="semelles-header">
+      <h2>Trois semelles.<br><em>Tous les terrains.</em></h2>
+      <p>Chaque semelle pèse 60g et se glisse dans la pochette Dirty-Bag incluse dans le kit.</p>
+    </div>
+    <div class="semelles-grid">
+
+      <!-- Semelle 1 -->
+      <div class="semelle">
+        <div class="semelle-photo">
+          <img src="https://images.unsplash.com/photo-1476480862126-209bfaa8edc8?w=800&q=85&fit=crop" alt="Running route" loading="lazy" />
+          <div class="semelle-photo-overlay"></div>
+          <div class="semelle-num">Semelle 01</div>
+          <div class="semelle-tag-photo">Route<br>& Urbain</div>
+        </div>
+        <div class="semelle-body">
+          <p>Gomme lisse et dense avec micro-rainures pour l'évacuation de l'eau. Conçue pour le bitume, les parcs et les pistes cyclables.</p>
+          <div class="semelle-specs">
+            <div class="sspec"><span class="sspec-k">Terrain</span><span class="sspec-v">Bitume · Parcs · Pistes</span></div>
+            <div class="sspec"><span class="sspec-k">Gomme</span><span class="sspec-v">Lisse haute densité</span></div>
+            <div class="sspec"><span class="sspec-k">Rainures</span><span class="sspec-v">Micro-canaux évacuation</span></div>
+          </div>
+        </div>
+        <div class="semelle-foot">
+          <span class="semelle-weight-tag">60g · Semelle 01</span>
+          <button class="semelle-add">Ajouter — 29€</button>
+        </div>
+      </div>
+
+      <!-- Semelle 2 -->
+      <div class="semelle">
+        <div class="semelle-photo">
+          <img src="https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=800&q=85&fit=crop" alt="Forêt sentier" loading="lazy" />
+          <div class="semelle-photo-overlay"></div>
+          <div class="semelle-num">Semelle 02</div>
+          <div class="semelle-tag-photo">Chemin<br>Sec</div>
+        </div>
+        <div class="semelle-body">
+          <p>Crampons de 3mm en étoile pour une accroche précise sur sentiers forestiers, terres battues et graviers.</p>
+          <div class="semelle-specs">
+            <div class="sspec"><span class="sspec-k">Terrain</span><span class="sspec-v">Forêt · Terre · Graviers</span></div>
+            <div class="sspec"><span class="sspec-k">Crampons</span><span class="sspec-v">3mm — Motif étoile</span></div>
+            <div class="sspec"><span class="sspec-k">Gomme</span><span class="sspec-v">Polyvalente haute accroche</span></div>
+          </div>
+        </div>
+        <div class="semelle-foot">
+          <span class="semelle-weight-tag">60g · Semelle 02</span>
+          <button class="semelle-add">Ajouter — 29€</button>
+        </div>
+      </div>
+
+      <!-- Semelle 3 -->
+      <div class="semelle">
+        <div class="semelle-photo">
+          <img src="https://images.unsplash.com/photo-1454496522488-7a8e488e8606?w=800&q=85&fit=crop&crop=center" alt="Montagne boue trail" loading="lazy" />
+          <div class="semelle-photo-overlay"></div>
+          <div class="semelle-num">Semelle 03</div>
+          <div class="semelle-tag-photo">Boue &<br>Technique</div>
+        </div>
+        <div class="semelle-body">
+          <p>Crampons profonds de 6mm espacés avec auto-nettoyage naturel. La boue s'évacue seule à chaque foulée.</p>
+          <div class="semelle-specs">
+            <div class="sspec"><span class="sspec-k">Terrain</span><span class="sspec-v">Montagne · Herbe · Marécages</span></div>
+            <div class="sspec"><span class="sspec-k">Crampons</span><span class="sspec-v">6mm — Auto-nettoyants</span></div>
+            <div class="sspec"><span class="sspec-k">Spécial</span><span class="sspec-v">Évacuation boue intégrée</span></div>
+          </div>
+        </div>
+        <div class="semelle-foot">
+          <span class="semelle-weight-tag">60g · Semelle 03</span>
+          <button class="semelle-add">Ajouter — 29€</button>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- MID PHOTO -->
+  <div class="mid-photo">
+    <img src="https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=1800&q=85&fit=crop&crop=top" alt="Forêt sentier trail" loading="lazy" />
+    <div class="mid-photo-overlay"></div>
+    <div class="mid-photo-content">
+      <p>Matériaux — Innovation</p>
+      <h3>Conçue pour<br>ne jamais<br>te lâcher.</h3>
+    </div>
+  </div>
+
+  <!-- MATERIAUX -->
+  <section class="materiaux" id="materiaux">
+    <div class="mat-photo">
+      <img src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=900&q=85&fit=crop" alt="Montagne sommet" loading="lazy" />
+    </div>
+    <div class="mat-content">
+      <div class="label">Technologie</div>
+      <h2>Des matériaux<br>pensés pour<br><em>l'extrême.</em></h2>
+      <div class="mat-list">
+        <div class="mat-item">
+          <div class="mat-item-top">
+            <div class="mat-name">Matryx™</div>
+            <div class="mat-part">Tige / Mesh</div>
+          </div>
+          <p class="mat-desc">Tissage hybride Kevlar + polyamide. Indéchirable, ultra-léger, hydrophobe — l'eau glisse sans pénétrer.</p>
+          <div class="mat-highlight">Résistance à la déchirure ×4 vs mesh standard</div>
+        </div>
+        <div class="mat-item">
+          <div class="mat-item-top">
+            <div class="mat-name">PEBA</div>
+            <div class="mat-part">Semelle intermédiaire</div>
+          </div>
+          <p class="mat-desc">Mousse haute résilience, même technologie que les chaussures de compétition à plaque carbone.</p>
+          <div class="mat-highlight">1 500 km vs 600 km pour une EVA standard</div>
+        </div>
+        <div class="mat-item">
+          <div class="mat-item-top">
+            <div class="mat-name">Slide-Lock™</div>
+            <div class="mat-part">Système de fixation</div>
+          </div>
+          <p class="mat-desc">Rails polymère + loquet talon inspiré des fixations ski de fond + joint Seal-Lip silicone périmétral.</p>
+          <div class="mat-highlight">Changement en moins de 10 secondes</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- VALEURS -->
+  <div class="valeurs">
+    <div class="valeur">
+      <div class="valeur-num">01</div>
+      <div class="valeur-title">Performance</div>
+      <p class="valeur-desc">Matériaux issus de la compétition. Mousse PEBA, Matryx Kevlar, semelle intermédiaire qui dure 1 500 km.</p>
+    </div>
+    <div class="valeur">
+      <div class="valeur-num">02</div>
+      <div class="valeur-title">Polyvalence</div>
+      <p class="valeur-desc">Une seule chaussure pour tous tes terrains. Route, sentier, boue — tu changes de semelle, pas de chaussures.</p>
+    </div>
+    <div class="valeur">
+      <div class="valeur-num">03</div>
+      <div class="valeur-title">Responsabilité</div>
+      <p class="valeur-desc">Moins d'achats, moins de déchets. Une paire qui dure 3× plus longtemps, c'est 2 paires de moins à fabriquer.</p>
+    </div>
+  </div>
+
+  <!-- PRICING -->
+  <section class="pricing" id="prix">
+    <div class="pricing-header">
+      <h2>Choisir son<br><em>équipement.</em></h2>
+      <p>Investissement unique rentabilisé sur la durée. Le kit complet remplace 3 paires de chaussures.</p>
+    </div>
+    <div class="pricing-grid">
+      <div class="pcard">
+        <div class="pcard-name">Chaussure seule</div>
+        <p class="pcard-desc">La base EMPREINTE sans semelle — pour ceux qui possèdent déjà une semelle compatible.</p>
+        <div class="pcard-price">120€</div>
+        <div class="pcard-unit">Prix unitaire TTC</div>
+        <ul class="pcard-list">
+          <li>Chaussure base EMPREINTE</li>
+          <li>Mesh Matryx Kevlar</li>
+          <li>Semelle intermédiaire PEBA</li>
+          <li>Système Slide-Lock™ intégré</li>
+        </ul>
+        <button class="pcard-btn">Ajouter au panier</button>
+      </div>
+
+      <div class="pcard featured">
+        <div class="pcard-badge">Meilleure vente</div>
+        <div class="pcard-name">Kit Complet</div>
+        <p class="pcard-desc">La chaussure + les 3 semelles modulables + la pochette Dirty-Bag. L'équipement complet.</p>
+        <div class="pcard-price">180€</div>
+        <div class="pcard-unit">Prix du kit TTC</div>
+        <ul class="pcard-list">
+          <li>Chaussure base EMPREINTE</li>
+          <li>Semelle Route &amp; Urbain</li>
+          <li>Semelle Chemin Sec</li>
+          <li>Semelle Boue &amp; Technique</li>
+          <li>Pochette Dirty-Bag étanche</li>
+        </ul>
+        <button class="pcard-btn">Commander le kit</button>
+      </div>
+
+      <div class="pcard">
+        <div class="pcard-name">Semelle seule</div>
+        <p class="pcard-desc">Une semelle de remplacement ou d'ajout selon ton terrain de prédilection.</p>
+        <div class="pcard-price">29€</div>
+        <div class="pcard-unit">Par semelle TTC</div>
+        <ul class="pcard-list">
+          <li>Compatible toutes bases EMPREINTE</li>
+          <li>3 modèles disponibles</li>
+          <li>Poids : 60g</li>
+          <li>Livraison sous 48h</li>
+        </ul>
+        <button class="pcard-btn">Choisir une semelle</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA FINAL -->
+  <div class="cta-final">
+    <img src="https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=1800&q=85&fit=crop&crop=center" alt="Nature montagne" loading="lazy" />
+    <div class="cta-final-overlay"></div>
+    <div class="cta-final-content">
+      <h2>Prêt à laisser<br>ta <em>marque</em> ?</h2>
+      <a href="/pages/commander" class="btn-cta">Commander le kit complet</a>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-top">
+      <div>
+        <span class="footer-logo">Emprei<span>nte</span></span>
+        <p class="footer-tagline">La première chaussure de running à semelles modulaires. Conçue pour durer. Faite pour tous les terrains.</p>
+      </div>
+      <div class="footer-col">
+        <h5>Produit</h5>
+        <ul>
+          <li><a href="#">Kit complet</a></li>
+          <li><a href="#">Semelles</a></li>
+          <li><a href="#">Comment ça marche</a></li>
+          <li><a href="#">Guide des tailles</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h5>La marque</h5>
+        <ul>
+          <li><a href="#">Notre histoire</a></li>
+          <li><a href="#">Éco-responsabilité</a></li>
+          <li><a href="#">Ambassadeurs</a></li>
+          <li><a href="#">Presse</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h5>Support</h5>
+        <ul>
+          <li><a href="#">FAQ</a></li>
+          <li><a href="#">Livraison &amp; retours</a></li>
+          <li><a href="#">Garantie</a></li>
+          <li><a href="#">Contact</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p class="footer-copy">© 2025 EMPREINTE — Tous droits réservés</p>
+      <div class="footer-socials">
+        <a class="fsocial" href="#">Instagram</a>
+        <a class="fsocial" href="#">TikTok</a>
+        <a class="fsocial" href="#">YouTube</a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // Cursor
+    const cursor = document.getElementById('cursor');
+    const ring = document.getElementById('cursorRing');
+    let mx = 0, my = 0, rx = 0, ry = 0;
+    document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; });
+    function animCursor() {
+      cursor.style.left = mx + 'px'; cursor.style.top = my + 'px';
+      rx += (mx - rx) * 0.14; ry += (my - ry) * 0.14;
+      ring.style.left = rx + 'px'; ring.style.top = ry + 'px';
+      requestAnimationFrame(animCursor);
+    }
+    animCursor();
+
+    // Hero image parallax + load
+    const heroImg = document.getElementById('heroImg');
+    heroImg.style.backgroundImage = "url('https://images.unsplash.com/photo-1551632811-561732d1e306?w=1800&q=85&fit=crop')";
+    setTimeout(() => heroImg.classList.add('loaded'), 100);
+
+    window.addEventListener('scroll', () => {
+      const y = window.scrollY;
+      heroImg.style.transform = `scale(1) translateY(${y * 0.3}px)`;
+    });
+
+    // Hover effects on links
+    document.querySelectorAll('a, button').forEach(el => {
+      el.addEventListener('mouseenter', () => {
+        cursor.style.width = '6px'; cursor.style.height = '6px';
+        ring.style.width = '52px'; ring.style.height = '52px';
+        ring.style.borderColor = 'rgba(196,122,58,0.8)';
+      });
+      el.addEventListener('mouseleave', () => {
+        cursor.style.width = '10px'; cursor.style.height = '10px';
+        ring.style.width = '36px'; ring.style.height = '36px';
+        ring.style.borderColor = 'rgba(196,122,58,0.5)';
+      });
+    });
+  </script>
+</body>
+</html>
