@@ -1,13 +1,6 @@
-{% layout none %}
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Technologie — EMPREINTE</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com"/>
-  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,300;0,400;0,700;0,800;0,900;1,700;1,900&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
-  <style>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,300;0,400;0,700;0,800;0,900;1,700;1,900&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+<style>
     *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
     :root{--noir:#0A0A0A;--blanc:#F5F2ED;--terre:#C47A3A;--vert:#2E5C3A;--gris:#888;}
     html{scroll-behavior:smooth;}
@@ -130,9 +123,7 @@
       .footer-top{grid-template-columns:1fr 1fr;}
     }
   </style>
-</head>
-<body>
-  <div class="cursor" id="cursor"></div>
+<div class="cursor" id="cursor"></div>
   <div class="cursor-ring" id="cursorRing"></div>
 
   <nav>
@@ -365,5 +356,3 @@
       el.addEventListener('mouseleave',()=>{cursor.style.width='10px';cursor.style.height='10px';ring.style.width='36px';ring.style.height='36px';});
     });
   </script>
-</body>
-</html>
